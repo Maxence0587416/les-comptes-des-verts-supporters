@@ -1,1 +1,18 @@
-{"name":"Les comptes des Verts — Supporter","short_name":"Comptes des Verts","start_url":"./","display":"standalone","background_color":"#F5F3EC","theme_color":"#0B3D24","lang":"fr"}
+{
+  "name": "Les comptes des Verts — Supporter",
+  "short_name": "Comptes des Verts",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F5F3EC",
+  "theme_color": "#0B3D24",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
