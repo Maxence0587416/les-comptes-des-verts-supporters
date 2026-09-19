@@ -12,7 +12,51 @@
    }
    login();
  }
- function login(msg=''){app.innerHTML=`<div class="wrap"><div class="top"><h1>🟢 Les comptes des Verts</h1><div class="small">Espace supporter</div></div><div class="card"><h2>Connexion</h2><p>Entre l'adresse email que le responsable a enregistrée pour toi.</p><input id="email" class="input" type="email" placeholder="ton@email.fr"><button id="send" class="btn yes">Recevoir mon lien de connexion</button><div id="status" class="status ${msg?'':'hidden'}">${esc(msg)}</div></div></div>`;document.getElementById('send').onclick=async()=>{const email=document.getElementById('email').value.trim().toLowerCase();if(!email)return;const r=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:'https://maxence0587416.github.io/les-comptes-des-verts-supporters/'}});document.getElementById('status').classList.remove('hidden');document.getElementById('status').textContent=r.error?'Erreur : '+r.error.message:'Lien envoyé. Ouvre le lien reçu par email sur ton téléphone.'};}
+ function login(msg=''){
+  app.innerHTML=`
+    <div class="wrap">
+      <div class="top">
+        <h1>🟢 Les comptes des Verts</h1>
+        <div class="small">Espace supporter</div>
+      </div>
+
+      <div class="card">
+        <h2>Connexion</h2>
+        <p>Entre ton adresse email et ton mot de passe.</p>
+
+        <input id="email" class="input" type="email" placeholder="ton@email.fr">
+        <input id="password" class="input" type="password" placeholder="Mot de passe">
+
+        <button id="send" class="btn yes">Se connecter</button>
+
+        <div id="status" class="status ${msg?'':'hidden'}">${esc(msg)}</div>
+      </div>
+    </div>`;
+
+  document.getElementById('send').onclick=async()=>{
+    const email=document.getElementById('email').value.trim().toLowerCase();
+    const password=document.getElementById('password').value;
+
+    if(!email || !password){
+      document.getElementById('status').classList.remove('hidden');
+      document.getElementById('status').textContent='Entre ton email et ton mot de passe.';
+      return;
+    }
+
+    const {error}=await sb.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if(error){
+      document.getElementById('status').classList.remove('hidden');
+      document.getElementById('status').textContent='Erreur de connexion : '+error.message;
+      return;
+    }
+
+    await loadProfile();
+  };
+}
  async function loadProfile(){const r=await sb.rpc('claim_supporter');if(r.error||!r.data){return login('Cette adresse email n’est pas encore associée à un supporter. Demande au responsable de renseigner ton email.');}profile=Array.isArray(r.data)?r.data[0]:r.data;await renderHome();}
  async function renderHome(){
   const matches=(await sb.from('matches').select('id,name,date,opponent,stadium,venue,competition,season,closed,ticketing_opens_at,match_starts_at').eq('closed',false).order('date',{ascending:true})).data||[];
