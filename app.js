@@ -1,100 +1,1079 @@
 (function(){
- const C=window.VERTS_CLOUD_CONFIG||{}; const sb=window.supabase.createClient(C.url,C.publishableKey); const app=document.getElementById('app');
- const fmt=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(Number(n)||0);
- const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- let profile=null;
- async function boot(){
-   const { data: { session }, error } = await sb.auth.getSession();
-   if(error) console.error(error);
-   if(session){
-     await loadProfile();
-     return;
-   }
-   login();
- }
- function login(msg=''){
-  app.innerHTML=`
-    <div class="wrap">
-      <div class="top">
-        <h1>🟢 Les comptes des Verts</h1>
-        <div class="small">Espace supporter</div>
-      </div>
 
-      <div class="card">
-        <h2>Connexion</h2>
-        <p>Entre ton adresse email et ton mot de passe.</p>
+  const C=window.VERTS_CLOUD_CONFIG||{};
+  const sb=window.supabase.createClient(C.url,C.publishableKey);
+  const app=document.getElementById('app');
 
-        <input id="email" class="input" type="email" placeholder="ton@email.fr">
-        <input id="password" class="input" type="password" placeholder="Mot de passe">
+  const fmt=n=>new Intl.NumberFormat('fr-FR',{
+    style:'currency',
+    currency:'EUR'
+  }).format(Number(n)||0);
 
-        <button id="send" class="btn yes">Se connecter</button>
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c]));
 
-        <div id="status" class="status ${msg?'':'hidden'}">${esc(msg)}</div>
-      </div>
-    </div>`;
+  let profile=null;
+  let currentPage='home';
+  let appData=null;
 
-  document.getElementById('send').onclick=async()=>{
-    const email=document.getElementById('email').value.trim().toLowerCase();
-    const password=document.getElementById('password').value;
 
-    if(!email || !password){
-      document.getElementById('status').classList.remove('hidden');
-      document.getElementById('status').textContent='Entre ton email et ton mot de passe.';
+  /* =========================
+     CONNEXION
+     ========================= */
+
+  async function boot(){
+
+    const {data:{session},error}=await sb.auth.getSession();
+
+    if(error) console.error(error);
+
+    if(session){
+      await loadProfile();
       return;
     }
 
-    const {error}=await sb.auth.signInWithPassword({
-      email,
-      password
+    login();
+  }
+
+
+  function login(msg=''){
+
+    app.innerHTML=`
+      <div class="login-screen">
+
+        <div class="login-brand">
+          <div class="brand-ball">⚽</div>
+          <h1>Les comptes<br>des Verts</h1>
+          <div class="login-subtitle">Espace supporter</div>
+        </div>
+
+        <div class="login-card">
+
+          <h2>Connexion</h2>
+          <p class="small">
+            Connecte-toi pour retrouver tes matchs et tes comptes.
+          </p>
+
+          <input
+            id="email"
+            class="input"
+            type="email"
+            placeholder="Adresse email"
+          >
+
+          <input
+            id="password"
+            class="input"
+            type="password"
+            placeholder="Mot de passe"
+          >
+
+          <button id="send" class="btn yes login-button">
+            Se connecter
+          </button>
+
+          <div id="status" class="status ${msg?'':'hidden'}">
+            ${esc(msg)}
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+
+    document.getElementById('send').onclick=async()=>{
+
+      const email=document
+        .getElementById('email')
+        .value
+        .trim()
+        .toLowerCase();
+
+      const password=document
+        .getElementById('password')
+        .value;
+
+
+      if(!email||!password){
+
+        const status=document.getElementById('status');
+
+        status.classList.remove('hidden');
+        status.textContent='Entre ton email et ton mot de passe.';
+
+        return;
+      }
+
+
+      const {error}=await sb.auth.signInWithPassword({
+        email,
+        password
+      });
+
+
+      if(error){
+
+        const status=document.getElementById('status');
+
+        status.classList.remove('hidden');
+        status.textContent='Erreur de connexion : '+error.message;
+
+        return;
+      }
+
+
+      await loadProfile();
+    };
+  }
+
+
+  async function loadProfile(){
+
+    const {data:{user}}=await sb.auth.getUser();
+
+    if(!user){
+      return login();
+    }
+
+
+    const r=await sb
+      .from('supporters')
+      .select('id,name,email,auth_user_id')
+      .eq('auth_user_id',user.id)
+      .maybeSingle();
+
+
+    if(r.error||!r.data){
+
+      return login(
+        'Ce compte n’est pas encore associé à un supporter. Demande au responsable de vérifier ton compte.'
+      );
+    }
+
+
+    profile=r.data;
+
+    await loadData();
+  }
+
+
+
+  /* =========================
+     CHARGEMENT DES DONNÉES
+     ========================= */
+
+  async function loadData(){
+
+    const matchesResult=await sb
+      .from('matches')
+      .select('id,name,date,opponent,stadium,venue,competition,season,closed,ticketing_opens_at,match_starts_at')
+      .eq('closed',false)
+      .order('date',{ascending:true});
+
+
+    const attendanceResult=await sb
+      .from('match_attendance')
+      .select('match_id,answer,updated_at')
+      .eq('supporter_id',profile.id);
+
+
+    const ticketsResult=await sb
+      .from('tickets')
+      .select('id,match_id,date,match,tribune,price')
+      .eq('supporter_id',profile.id)
+      .eq('owner_ticket',false)
+      .order('date',{ascending:false});
+
+
+    if(ticketsResult.error){
+      alert('ERREUR BILLETS : '+ticketsResult.error.message);
+    }
+
+
+    const paymentsResult=await sb
+      .from('payments')
+      .select('id,date,amount,note')
+      .eq('supporter_id',profile.id)
+      .order('date',{ascending:false});
+
+
+    if(paymentsResult.error){
+      alert('ERREUR PAIEMENTS : '+paymentsResult.error.message);
+    }
+
+
+    const matches=matchesResult.data||[];
+    const att=attendanceResult.data||[];
+    const tickets=ticketsResult.data||[];
+    const pays=paymentsResult.data||[];
+
+
+    const ticketTotal=tickets.reduce(
+      (s,t)=>s+Number(t.price||0),
+      0
+    );
+
+    const paid=pays.reduce(
+      (s,p)=>s+Number(p.amount||0),
+      0
+    );
+
+    const remaining=Math.max(ticketTotal-paid,0);
+
+    const attMap=Object.fromEntries(
+      att.map(a=>[a.match_id,a.answer])
+    );
+
+
+    appData={
+      matches,
+      att,
+      tickets,
+      pays,
+      ticketTotal,
+      paid,
+      remaining,
+      attMap
+    };
+
+
+    renderApp();
+  }
+
+
+
+  /* =========================
+     STRUCTURE DE L'APPLICATION
+     ========================= */
+
+  function renderApp(){
+
+    app.innerHTML=`
+      <div class="supporter-app">
+
+        <header class="app-header">
+
+          <div class="app-brand">
+            <div class="app-logo">⚽</div>
+
+            <div>
+              <div class="app-title">Les comptes des Verts</div>
+              <div class="app-user">
+                Bonjour ${esc(profile.name)}
+              </div>
+            </div>
+          </div>
+
+        </header>
+
+
+        <main id="pageContent" class="page-content"></main>
+
+
+        <nav class="bottom-nav">
+
+          <button
+            class="nav-item"
+            data-page="home"
+            onclick="changePage('home')"
+          >
+            <span class="nav-icon">⌂</span>
+            <span>Accueil</span>
+          </button>
+
+
+          <button
+            class="nav-item"
+            data-page="matches"
+            onclick="changePage('matches')"
+          >
+            <span class="nav-icon">⚽</span>
+            <span>Matchs</span>
+          </button>
+
+
+          <button
+            class="nav-item"
+            data-page="accounts"
+            onclick="changePage('accounts')"
+          >
+            <span class="nav-icon">€</span>
+            <span>Comptes</span>
+          </button>
+
+
+          <button
+            class="nav-item"
+            data-page="more"
+            onclick="changePage('more')"
+          >
+            <span class="nav-icon">•••</span>
+            <span>Plus</span>
+          </button>
+
+        </nav>
+
+      </div>
+    `;
+
+    renderPage();
+  }
+
+
+
+  window.changePage=function(page){
+
+    currentPage=page;
+
+    renderPage();
+
+    window.scrollTo({
+      top:0,
+      behavior:'smooth'
     });
+  };
 
-    if(error){
-      document.getElementById('status').classList.remove('hidden');
-      document.getElementById('status').textContent='Erreur de connexion : '+error.message;
+
+
+  function renderPage(){
+
+    const content=document.getElementById('pageContent');
+
+    if(!content) return;
+
+
+    document
+      .querySelectorAll('.nav-item')
+      .forEach(button=>{
+
+        button.classList.toggle(
+          'active',
+          button.dataset.page===currentPage
+        );
+
+      });
+
+
+    if(currentPage==='matches'){
+      content.innerHTML=renderMatches();
       return;
     }
 
-    await loadProfile();
+
+    if(currentPage==='accounts'){
+      content.innerHTML=renderAccounts();
+      return;
+    }
+
+
+    if(currentPage==='more'){
+      content.innerHTML=renderMore();
+      bindMore();
+      return;
+    }
+
+
+    content.innerHTML=renderHome();
+  }
+
+
+
+  /* =========================
+     ACCUEIL
+     ========================= */
+
+  function renderHome(){
+
+    const {
+      matches,
+      tickets,
+      remaining,
+      attMap
+    }=appData;
+
+
+    const visibleMatches=getVisibleMatches(matches,attMap);
+
+    const nextMatch=visibleMatches[0]||null;
+
+
+    return `
+
+      <section class="hero-card">
+
+        <div class="hero-label">
+          MON ESPACE SUPPORTER
+        </div>
+
+        <h1>
+          Allez les Verts !
+        </h1>
+
+        <p>
+          Retrouve ici tes prochains matchs et tes billets.
+        </p>
+
+      </section>
+
+
+      <section class="quick-grid">
+
+        <button
+          class="quick-card"
+          onclick="changePage('matches')"
+        >
+          <span class="quick-icon">⚽</span>
+          <span class="quick-label">Prochains matchs</span>
+          <strong>${visibleMatches.length}</strong>
+        </button>
+
+
+        <button
+          class="quick-card"
+          onclick="changePage('accounts')"
+        >
+          <span class="quick-icon">🎟️</span>
+          <span class="quick-label">Mes billets</span>
+          <strong>${tickets.length}</strong>
+        </button>
+
+      </section>
+
+
+      <section class="balance-card">
+
+        <div>
+          <div class="section-eyebrow">
+            MON SOLDE
+          </div>
+
+          <div class="home-money">
+            ${fmt(remaining)}
+          </div>
+
+          <div class="small">
+            Reste à payer
+          </div>
+        </div>
+
+        <button
+          class="mini-action"
+          onclick="changePage('accounts')"
+        >
+          Voir mes comptes →
+        </button>
+
+      </section>
+
+
+      <section class="section-block">
+
+        <div class="section-title-row">
+          <h2>Prochain match</h2>
+
+          <button
+            class="text-link"
+            onclick="changePage('matches')"
+          >
+            Voir tout
+          </button>
+        </div>
+
+
+        ${
+          nextMatch
+          ? renderMatchCard(nextMatch,true)
+          : `
+            <div class="empty-state">
+              Aucun match ouvert pour le moment.
+            </div>
+          `
+        }
+
+      </section>
+    `;
+  }
+
+
+
+  /* =========================
+     MATCHS
+     ========================= */
+
+  function getVisibleMatches(matches,attMap){
+
+    return matches.filter(m=>{
+
+      const deadline=m.ticketing_opens_at
+        ? new Date(m.ticketing_opens_at)
+        : null;
+
+      const matchDate=m.match_starts_at
+        ? new Date(m.match_starts_at)
+        : (
+            m.date
+            ? new Date(m.date+'T23:59:59')
+            : null
+          );
+
+      const expired=
+        (deadline&&new Date()>=deadline)
+        ||
+        (matchDate&&new Date()>=matchDate);
+
+
+      return !expired||attMap[m.id]==='yes';
+    });
+  }
+
+
+
+  function renderMatches(){
+
+    const {matches,attMap}=appData;
+
+    const visibleMatches=getVisibleMatches(
+      matches,
+      attMap
+    );
+
+
+    return `
+
+      <section class="page-heading">
+
+        <div class="section-eyebrow">
+          SAISON EN COURS
+        </div>
+
+        <h1>Mes matchs</h1>
+
+        <p>
+          Indique ta présence et retrouve l’état de tes billets.
+        </p>
+
+      </section>
+
+
+      <section class="section-block">
+
+        ${
+          visibleMatches.length
+          ? visibleMatches
+              .map(m=>renderMatchCard(m,false))
+              .join('')
+          : `
+            <div class="empty-state">
+              Aucun match ouvert pour le moment.
+            </div>
+          `
+        }
+
+      </section>
+    `;
+  }
+
+
+
+  function renderMatchCard(m,compact=false){
+
+    const {tickets,attMap}=appData;
+
+
+    const deadline=m.ticketing_opens_at
+      ? new Date(m.ticketing_opens_at)
+      : null;
+
+
+    const expired=
+      deadline&&new Date()>=deadline;
+
+
+    const ticket=tickets.find(
+      t=>t.match_id===m.id
+    );
+
+
+    const matchDate=m.match_starts_at
+      ? new Date(m.match_starts_at)
+          .toLocaleString(
+            'fr-FR',
+            {
+              dateStyle:'short',
+              timeStyle:'short'
+            }
+          )
+      : m.date||'';
+
+
+    return `
+
+      <article class="match-card ${compact?'compact':''}">
+
+        <div class="match-top">
+
+          <span class="match-badge">
+            MATCH
+          </span>
+
+          ${
+            attMap[m.id]==='yes'
+            ? `<span class="answer-badge yes-answer">Présent</span>`
+            : attMap[m.id]==='no'
+            ? `<span class="answer-badge no-answer">Absent</span>`
+            : ''
+          }
+
+        </div>
+
+
+        <h3>
+          ${esc(m.name)}
+        </h3>
+
+
+        <div class="match-info">
+          <div>📅 ${esc(matchDate)}</div>
+
+          <div>
+            📍 ${esc(
+              m.venue||
+              m.stadium||
+              'Stade non renseigné'
+            )}
+          </div>
+
+          ${
+            m.opponent
+            ? `<div>⚽ ${esc(m.opponent)}</div>`
+            : ''
+          }
+
+        </div>
+
+
+        ${
+          !expired
+          ? `
+
+            <div class="actions">
+
+              <button
+                class="btn yes ${attMap[m.id]==='yes'?'selected':''}"
+                onclick="answer('${m.id}','yes')"
+              >
+                ✓ Je veux y aller
+              </button>
+
+
+              <button
+                class="btn no ${attMap[m.id]==='no'?'selected':''}"
+                onclick="answer('${m.id}','no')"
+              >
+                Je ne peux pas
+              </button>
+
+            </div>
+
+
+            ${
+              deadline
+              ? `
+                <div class="deadline">
+                  Réponse jusqu'au
+                  ${deadline.toLocaleString(
+                    'fr-FR',
+                    {
+                      dateStyle:'short',
+                      timeStyle:'short'
+                    }
+                  )}
+                </div>
+              `
+              : ''
+            }
+
+          `
+          : ticket
+          ? `
+            <div class="ticket-status success">
+              <strong>✓ Billet pris</strong>
+              <span>
+                ${esc(ticket.tribune||'Tribune non renseignée')}
+                ·
+                ${fmt(ticket.price)}
+              </span>
+            </div>
+          `
+          : `
+            <div class="ticket-status waiting">
+              <strong>⏳ Billet en attente</strong>
+              <span>
+                Ta demande a bien été prise en compte.
+              </span>
+            </div>
+          `
+        }
+
+      </article>
+    `;
+  }
+
+
+
+  /* =========================
+     COMPTES
+     ========================= */
+
+  function renderAccounts(){
+
+    const {
+      tickets,
+      pays,
+      ticketTotal,
+      paid,
+      remaining
+    }=appData;
+
+
+    return `
+
+      <section class="page-heading">
+
+        <div class="section-eyebrow">
+          MES COMPTES
+        </div>
+
+        <h1>
+          Billets & remboursements
+        </h1>
+
+      </section>
+
+
+      <section class="account-summary">
+
+        <div class="summary-main">
+
+          <span>Reste à payer</span>
+
+          <strong>
+            ${fmt(remaining)}
+          </strong>
+
+        </div>
+
+
+        <div class="summary-details">
+
+          <div>
+            <span>Total billets</span>
+            <strong>${fmt(ticketTotal)}</strong>
+          </div>
+
+          <div>
+            <span>Total remboursé</span>
+            <strong>${fmt(paid)}</strong>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="section-block">
+
+        <h2>Mes billets</h2>
+
+        ${
+          tickets.length
+          ? tickets.map(t=>`
+
+              <article class="ticket-card">
+
+                <div class="ticket-icon">
+                  🎟️
+                </div>
+
+                <div class="ticket-content">
+
+                  <strong>
+                    ${esc(t.match||'Match')}
+                  </strong>
+
+                  <span>
+                    ${esc(t.date||'Date non renseignée')}
+                  </span>
+
+                  <span>
+                    ${esc(
+                      t.tribune||
+                      'Tribune à confirmer'
+                    )}
+                  </span>
+
+                </div>
+
+                <div class="ticket-price">
+                  ${fmt(t.price)}
+                </div>
+
+              </article>
+
+            `).join('')
+          : `
+            <div class="empty-state">
+              Aucun billet attribué pour le moment.
+            </div>
+          `
+        }
+
+      </section>
+
+
+      <section class="section-block">
+
+        <h2>Mes remboursements</h2>
+
+        ${
+          pays.length
+          ? pays.map(p=>`
+
+              <article class="payment-card">
+
+                <div class="payment-icon">
+                  €
+                </div>
+
+                <div class="payment-content">
+
+                  <strong>
+                    ${esc(
+                      p.note||
+                      'Remboursement'
+                    )}
+                  </strong>
+
+                  <span>
+                    ${esc(
+                      p.date||
+                      'Date non renseignée'
+                    )}
+                  </span>
+
+                </div>
+
+                <div class="payment-amount">
+                  ${fmt(p.amount)}
+                </div>
+
+              </article>
+
+            `).join('')
+          : `
+            <div class="empty-state">
+              Aucun remboursement enregistré.
+            </div>
+          `
+        }
+
+      </section>
+    `;
+  }
+
+
+
+  /* =========================
+     PLUS
+     ========================= */
+
+  function renderMore(){
+
+    return `
+
+      <section class="page-heading">
+
+        <div class="section-eyebrow">
+          MON ESPACE
+        </div>
+
+        <h1>Plus</h1>
+
+      </section>
+
+
+      <section class="profile-card">
+
+        <div class="profile-avatar">
+          ${esc(
+            (profile.name||'?')
+              .charAt(0)
+              .toUpperCase()
+          )}
+        </div>
+
+        <div>
+
+          <strong>
+            ${esc(profile.name)}
+          </strong>
+
+          <span>
+            ${esc(profile.email||'')}
+          </span>
+
+        </div>
+
+      </section>
+
+
+      <section class="more-list">
+
+        <button
+          class="more-row"
+          onclick="changePage('matches')"
+        >
+          <span>⚽ Mes matchs</span>
+          <b>›</b>
+        </button>
+
+
+        <button
+          class="more-row"
+          onclick="changePage('accounts')"
+        >
+          <span>🎟️ Mes billets et comptes</span>
+          <b>›</b>
+        </button>
+
+
+        <button
+          id="refreshData"
+          class="more-row"
+        >
+          <span>↻ Actualiser mes données</span>
+          <b>›</b>
+        </button>
+
+
+        <button
+          id="logout"
+          class="more-row logout-row"
+        >
+          <span>Déconnexion</span>
+          <b>›</b>
+        </button>
+
+      </section>
+    `;
+  }
+
+
+
+  function bindMore(){
+
+    const refresh=document.getElementById('refreshData');
+
+    if(refresh){
+
+      refresh.onclick=async()=>{
+        await loadData();
+      };
+    }
+
+
+    const logout=document.getElementById('logout');
+
+    if(logout){
+
+      logout.onclick=async()=>{
+
+        await sb.auth.signOut();
+
+        profile=null;
+        appData=null;
+        currentPage='home';
+
+        login();
+      };
+    }
+  }
+
+
+
+  /* =========================
+     RÉPONSES AUX MATCHS
+     ========================= */
+
+  window.answer=async(matchId,answer)=>{
+
+    const r=await sb
+      .from('match_attendance')
+      .upsert(
+        {
+          match_id:matchId,
+          supporter_id:profile.id,
+          answer,
+          updated_at:new Date().toISOString()
+        },
+        {
+          onConflict:'match_id,supporter_id'
+        }
+      );
+
+
+    if(r.error){
+
+      alert(
+        'Impossible d’enregistrer la réponse : '
+        +r.error.message
+      );
+
+      return;
+    }
+
+
+    await loadData();
   };
-}
-async function loadProfile(){
-  const {data:{user}}=await sb.auth.getUser();
 
-  if(!user){
-    return login();
-  }
 
-  const r=await sb
-    .from('supporters')
-    .select('id,name,email,auth_user_id')
-    .eq('auth_user_id',user.id)
-    .maybeSingle();
 
-  if(r.error||!r.data){
-    return login('Ce compte n’est pas encore associé à un supporter. Demande au responsable de vérifier ton compte.');
-  }
+  /* =========================
+     SESSION
+     ========================= */
 
-  profile=r.data;
-  await renderHome();
-}
- async function renderHome(){
-  const matches=(await sb.from('matches').select('id,name,date,opponent,stadium,venue,competition,season,closed,ticketing_opens_at,match_starts_at').eq('closed',false).order('date',{ascending:true})).data||[];
-  const att=(await sb.from('match_attendance').select('match_id,answer,updated_at').eq('supporter_id',profile.id)).data||[];
-  const ticketsResult=await sb.from('tickets').select('id,match_id,date,match,tribune,price').eq('supporter_id',profile.id).eq('owner_ticket',false).order('date',{ascending:false});
-if(ticketsResult.error) alert('ERREUR BILLETS : '+ticketsResult.error.message);
-const tickets=ticketsResult.data||[];
-  const paysResult=await sb.from('payments').select('id,date,amount,note').eq('supporter_id',profile.id).order('date',{ascending:false});
-if(paysResult.error) alert('ERREUR PAIEMENTS : '+paysResult.error.message);
-const pays=paysResult.data||[];
-  const ticketTotal=tickets.reduce((s,t)=>s+Number(t.price||0),0), paid=pays.reduce((s,p)=>s+Number(p.amount||0),0), remaining=Math.max(ticketTotal-paid,0);
-  const attMap=Object.fromEntries(att.map(a=>[a.match_id,a.answer]));
-  app.innerHTML=`<div class="wrap"><div class="top"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><h1>🟢 Les comptes des Verts</h1><div class="small">Bonjour ${esc(profile.name)}</div></div><button id="logout" class="btn no">Déconnexion</button></div></div>
-  <div class="card"><h2>Mes comptes</h2><div class="money">${fmt(remaining)}</div><div class="small">Reste à payer sur les billets attribués</div><div style="margin-top:10px">Total des billets : <b>${fmt(ticketTotal)}</b> · Total payé : <b>${fmt(paid)}</b></div>${tickets.length?tickets.map(t=>`<div class="ticket"><b>${esc(t.match||'Match')}</b><br><span class="small">${esc(t.date||'')} · ${esc(t.tribune||'Tribune à confirmer')}</span><div style="margin-top:8px">Prix du billet : <b>${fmt(t.price)}</b></div></div>`).join(''):'<div class="small" style="margin-top:10px">Aucun billet attribué pour le moment.</div>'}<h3 style="margin-top:22px">Mes remboursements</h3>${pays.length?pays.map(p=>`<div class="ticket"><b>${esc(p.note||'Remboursement')}</b><br><span class="small">Date du remboursement : ${esc(p.date||'Date non renseignée')}</span><div style="margin-top:8px">Montant remboursé : <b>${fmt(p.amount)}</b></div></div>`).join(''):'<div class="small" style="margin-top:10px">Aucun remboursement enregistré pour le moment.</div>'}</div>
-  <div class="card"><h2>Les prochains matchs</h2>${matches.filter(m=>{const deadline=m.ticketing_opens_at?new Date(m.ticketing_opens_at):null;const matchDate=m.match_starts_at?new Date(m.match_starts_at):(m.date?new Date(m.date+'T23:59:59'):null);const expired=(deadline&&new Date()>=deadline)||(matchDate&&new Date()>=matchDate);return !expired||attMap[m.id]==='yes';}).length?matches.filter(m=>{const deadline=m.ticketing_opens_at?new Date(m.ticketing_opens_at):null;const matchDate=m.match_starts_at?new Date(m.match_starts_at):(m.date?new Date(m.date+'T23:59:59'):null);const expired=(deadline&&new Date()>=deadline)||(matchDate&&new Date()>=matchDate);return !expired||attMap[m.id]==='yes';}).map(m=>{const deadline=m.ticketing_opens_at?new Date(m.ticketing_opens_at):null;const expired=deadline&&new Date()>=deadline;const ticket=tickets.find(t=>t.match_id===m.id);return `<div class="match"><h3>${esc(m.name)}</h3><div class="small">${esc(m.match_starts_at?new Date(m.match_starts_at).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'}):m.date||'')} · ${esc(m.venue||m.stadium||'Stade non renseigné')}${m.opponent?' · '+esc(m.opponent):''}</div>${!expired?`<div class="actions"><button class="btn yes ${attMap[m.id]==='yes'?'selected':''}" onclick="answer('${m.id}','yes')">Je veux y aller</button><button class="btn no ${attMap[m.id]==='no'?'selected':''}" onclick="answer('${m.id}','no')">Je ne veux / peux pas y aller</button></div>${deadline?`<div class="status">Réponse possible jusqu'au ${deadline.toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})}.</div>`:''}`:ticket?`<div class="status">✅ Billet pris · Tribune : ${esc(ticket.tribune||'Non renseignée')} · Prix : ${fmt(ticket.price)}</div>`:`<div class="status">⏳ Billet en attente</div>`}</div>`;}).join(''):'<div class="small">Aucun match ouvert pour le moment.</div>'}</div></div>`;
-  document.getElementById('logout').onclick=async()=>{await sb.auth.signOut();login()};
- }
- window.answer=async(matchId,answer)=>{const r=await sb.from('match_attendance').upsert({match_id:matchId,supporter_id:profile.id,answer,updated_at:new Date().toISOString()},{onConflict:'match_id,supporter_id'});if(r.error){alert('Impossible d’enregistrer la réponse : '+r.error.message);return}await renderHome()};
- sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'&&session)setTimeout(loadProfile,0)});
- boot();
+  sb.auth.onAuthStateChange(
+    (event,session)=>{
+
+      if(
+        event==='SIGNED_IN'
+        &&
+        session
+      ){
+        setTimeout(loadProfile,0);
+      }
+
+    }
+  );
+
+
+  boot();
+
 })();
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+
+
+if('serviceWorker' in navigator){
+
+  navigator
+    .serviceWorker
+    .register('./sw.js')
+    .catch(()=>{});
+
+}
