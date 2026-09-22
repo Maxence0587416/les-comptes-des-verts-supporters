@@ -61,8 +61,12 @@
  async function renderHome(){
   const matches=(await sb.from('matches').select('id,name,date,opponent,stadium,venue,competition,season,closed,ticketing_opens_at,match_starts_at').eq('closed',false).order('date',{ascending:true})).data||[];
   const att=(await sb.from('match_attendance').select('match_id,answer,updated_at').eq('supporter_id',profile.id)).data||[];
-  const tickets=(await sb.from('tickets').select('id,match_id,date,match,tribune,price').eq('supporter_id',profile.id).eq('owner_ticket',false).order('date',{ascending:false})).data||[];
-  const pays=(await sb.from('payments').select('id,date,amount,note').eq('supporter_id',profile.id).order('date',{ascending:false})).data||[];
+  const ticketsResult=await sb.from('tickets').select('id,match_id,date,match,tribune,price').eq('supporter_id',profile.id).eq('owner_ticket',false).order('date',{ascending:false});
+if(ticketsResult.error) alert('ERREUR BILLETS : '+ticketsResult.error.message);
+const tickets=ticketsResult.data||[];
+  const paysResult=await sb.from('payments').select('id,date,amount,note').eq('supporter_id',profile.id).order('date',{ascending:false});
+if(paysResult.error) alert('ERREUR PAIEMENTS : '+paysResult.error.message);
+const pays=paysResult.data||[];
   const ticketTotal=tickets.reduce((s,t)=>s+Number(t.price||0),0), paid=pays.reduce((s,p)=>s+Number(p.amount||0),0), remaining=Math.max(ticketTotal-paid,0);
   const attMap=Object.fromEntries(att.map(a=>[a.match_id,a.answer]));
   app.innerHTML=`<div class="wrap"><div class="top"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><h1>🟢 Les comptes des Verts</h1><div class="small">Bonjour ${esc(profile.name)}</div></div><button id="logout" class="btn no">Déconnexion</button></div></div>
