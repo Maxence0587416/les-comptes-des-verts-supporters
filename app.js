@@ -43,49 +43,109 @@
 
   function login(msg=''){
 
-    app.innerHTML=`
-      <div class="login-screen">
+   app.innerHTML=`
+  <div class="login-screen">
 
-        <div class="login-brand">
-          <div class="brand-ball">⚽</div>
-          <h1>Les comptes<br>des Verts</h1>
-          <div class="login-subtitle">Espace supporter</div>
+    <div class="login-hero">
+
+      <div class="login-stadium-overlay"></div>
+
+      <div class="login-brand">
+
+        <div class="brand-ball">⚽</div>
+
+        <h1>
+          Les comptes<br>
+          <span>des Verts</span>
+        </h1>
+
+        <div class="login-subtitle">
+          ESPACE SUPPORTER
         </div>
 
-        <div class="login-card">
+        <div class="login-line"></div>
 
-          <h2>Connexion</h2>
-          <p class="small">
-            Connecte-toi pour retrouver tes matchs et tes comptes.
-          </p>
-
-          <input
-            id="email"
-            class="input"
-            type="email"
-            placeholder="Adresse email"
-          >
-
-          <input
-            id="password"
-            class="input"
-            type="password"
-            placeholder="Mot de passe"
-          >
-
-          <button id="send" class="btn yes login-button">
-            Se connecter
-          </button>
-
-          <div id="status" class="status ${msg?'':'hidden'}">
-            ${esc(msg)}
-          </div>
-
+        <div class="login-passion">
+          Fiers d'être Stéphanois
         </div>
 
       </div>
-    `;
 
+    </div>
+
+
+    <div class="login-card">
+
+      <div class="login-title">
+        <div class="login-user-icon">●</div>
+
+        <div>
+          <h2>Connexion</h2>
+          <p>
+            Connecte-toi pour retrouver tes matchs<br>
+            et tes comptes.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="login-input-wrap">
+        <span class="login-field-icon">✉</span>
+
+        <input
+          id="email"
+          class="input login-input"
+          type="email"
+          placeholder="Adresse email"
+          autocomplete="email"
+        >
+      </div>
+
+
+      <div class="login-input-wrap">
+        <span class="login-field-icon">🔒</span>
+
+        <input
+          id="password"
+          class="input login-input"
+          type="password"
+          placeholder="Mot de passe"
+          autocomplete="current-password"
+        >
+      </div>
+
+
+      <button id="send" class="btn yes login-button">
+        <span>Se connecter</span>
+        <span class="login-arrow">→</span>
+      </button>
+
+
+      <div id="status" class="status ${msg?'':'hidden'}">
+        ${esc(msg)}
+      </div>
+
+    </div>
+
+
+    <div class="login-footer">
+
+      <div class="login-quote">
+        « Ensemble, toujours plus haut ! »
+      </div>
+
+      <div class="login-city">
+        SAINT-ÉTIENNE
+      </div>
+
+      <div class="login-values">
+        PASSION&nbsp;&nbsp;•&nbsp;&nbsp;FIDÉLITÉ&nbsp;&nbsp;•&nbsp;&nbsp;FAMILLE
+      </div>
+
+    </div>
+
+  </div>
+`;
 
     document.getElementById('send').onclick=async()=>{
 
