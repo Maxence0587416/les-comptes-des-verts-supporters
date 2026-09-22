@@ -1,1 +1,329 @@
-:root{--green:#1B8A3C;--dark:#0B3D24;--gold:#C9A24B;--bg:#F5F3EC;--card:#fff;--text:#16281C;--muted:#6B7A70;--red:#C24A2C}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;padding:18px}.wrap{max-width:760px;margin:auto}.card{background:var(--card);border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 8px 28px #0000000d}h1,h2,h3{margin-top:0}.top{background:var(--dark);color:white;border-radius:20px;padding:22px}.small{color:var(--muted);font-size:13px}.top .small{color:#dce9df}.match{border:1px solid #e5e2d9;border-radius:16px;padding:16px;margin:12px 0}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.btn{border:0;border-radius:11px;padding:12px 15px;font-weight:700;cursor:pointer}.yes{background:var(--green);color:white}.no{background:#eee;color:var(--text)}.selected{outline:3px solid #c9a24b55}.badge{display:inline-block;padding:6px 9px;border-radius:999px;background:#edf5ef;color:var(--green);font-size:12px;font-weight:700}.ticket{background:#f8f7f1;border-radius:13px;padding:13px;margin-top:10px}.money{font-size:25px;font-weight:800}.input{width:100%;padding:12px;border:1px solid #ddd;border-radius:11px;margin:7px 0 12px}.danger{color:var(--red)}.hidden{display:none}.status{padding:10px;border-radius:10px;background:#f5f3ec;margin-top:10px;white-space:pre-wrap}
+:root{
+  --green:#168447;
+  --green-dark:#07532f;
+  --green-deep:#063d25;
+  --green-light:#eaf4ee;
+  --cream:#f4f3ee;
+  --card:#ffffff;
+  --text:#17231c;
+  --muted:#69756e;
+  --border:#dfe5e1;
+  --red:#b84035;
+  --gold:#c6a34f;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  background:var(--cream);
+}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  padding:0 0 35px;
+  line-height:1.4;
+}
+
+.wrap{
+  max-width:760px;
+  margin:0 auto;
+  padding:14px;
+}
+
+
+/* =========================
+   EN-TÊTE
+   ========================= */
+
+.top{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,var(--green-deep),var(--green-dark));
+  color:#fff;
+  border-radius:16px;
+  padding:24px 20px 20px;
+  margin-bottom:16px;
+  box-shadow:0 5px 16px rgba(6,61,37,.18);
+  border-bottom:4px solid var(--green);
+}
+
+.top::after{
+  content:"";
+  position:absolute;
+  width:150px;
+  height:150px;
+  border:28px solid rgba(255,255,255,.04);
+  border-radius:50%;
+  right:-65px;
+  top:-75px;
+}
+
+.top h1{
+  position:relative;
+  z-index:1;
+  margin:0 0 14px;
+  max-width:70%;
+  font-size:28px;
+  line-height:1.05;
+  letter-spacing:-.5px;
+}
+
+.top .small{
+  position:relative;
+  z-index:1;
+  color:#dcebe3;
+}
+
+
+/* =========================
+   CARTES PRINCIPALES
+   ========================= */
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+  margin:12px 0;
+  box-shadow:0 3px 10px rgba(20,50,35,.05);
+}
+
+h1,h2,h3{
+  margin-top:0;
+}
+
+h2{
+  font-size:20px;
+  margin-bottom:14px;
+  color:var(--green-deep);
+}
+
+h3{
+  font-size:16px;
+  margin-bottom:5px;
+}
+
+.small{
+  color:var(--muted);
+  font-size:13px;
+}
+
+
+/* =========================
+   ARGENT / COMPTES
+   ========================= */
+
+.money{
+  font-size:32px;
+  line-height:1;
+  font-weight:800;
+  color:var(--green-dark);
+  margin:8px 0 6px;
+  letter-spacing:-1px;
+}
+
+
+/* =========================
+   BILLETS / REMBOURSEMENTS
+   ========================= */
+
+.ticket{
+  position:relative;
+  background:#f7f9f7;
+  border:1px solid #e3e9e5;
+  border-left:4px solid var(--green);
+  border-radius:8px;
+  padding:13px 14px;
+  margin-top:10px;
+}
+
+.ticket b{
+  color:#17231c;
+}
+
+.ticket .small{
+  display:inline-block;
+  margin-top:2px;
+}
+
+
+/* =========================
+   MATCHS
+   ========================= */
+
+.match{
+  position:relative;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+  margin:12px 0;
+  overflow:hidden;
+}
+
+.match::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  width:4px;
+  background:var(--green);
+}
+
+.match h3{
+  padding-left:2px;
+  font-size:18px;
+  color:var(--green-deep);
+}
+
+
+/* =========================
+   BOUTONS
+   ========================= */
+
+.actions{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+.btn{
+  appearance:none;
+  border:1px solid transparent;
+  border-radius:8px;
+  padding:11px 14px;
+  font-weight:700;
+  font-size:14px;
+  cursor:pointer;
+  transition:transform .1s ease,opacity .1s ease;
+}
+
+.btn:active{
+  transform:scale(.98);
+}
+
+.yes{
+  background:var(--green);
+  color:#fff;
+  border-color:var(--green);
+}
+
+.no{
+  background:#fff;
+  color:#59645e;
+  border-color:#ccd5d0;
+}
+
+.selected{
+  box-shadow:0 0 0 3px rgba(198,163,79,.28);
+  border-color:var(--gold);
+}
+
+
+/* =========================
+   STATUT MATCH
+   ========================= */
+
+.status{
+  padding:10px 12px;
+  border-radius:7px;
+  background:var(--green-light);
+  border-left:3px solid var(--green);
+  margin-top:12px;
+  color:#234b35;
+  font-size:14px;
+  white-space:pre-wrap;
+}
+
+
+/* =========================
+   BADGES
+   ========================= */
+
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:5px;
+  background:var(--green-light);
+  color:var(--green-dark);
+  font-size:12px;
+  font-weight:700;
+}
+
+
+/* =========================
+   FORMULAIRES
+   ========================= */
+
+.input{
+  width:100%;
+  padding:12px 13px;
+  border:1px solid #ccd5d0;
+  border-radius:8px;
+  margin:7px 0 12px;
+  background:#fff;
+  color:var(--text);
+  font-size:16px;
+  outline:none;
+}
+
+.input:focus{
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(22,132,71,.10);
+}
+
+.danger{
+  color:var(--red);
+}
+
+.hidden{
+  display:none;
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media(max-width:520px){
+
+  .wrap{
+    padding:10px;
+  }
+
+  .top{
+    border-radius:12px;
+    padding:21px 17px 18px;
+  }
+
+  .top h1{
+    font-size:27px;
+  }
+
+  .card{
+    border-radius:11px;
+    padding:16px;
+    margin:10px 0;
+  }
+
+  .actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+
+  .btn{
+    width:100%;
+  }
+
+  .money{
+    font-size:30px;
+  }
+
+}
