@@ -1,4 +1,10 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0B3D24"><link rel="manifest" href="manifest.json"><title>Les comptes des Verts — Supporter</title><link rel="stylesheet" href="style.css"><script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><button id="installApp" style="display:none">📲 Installer l'application</button>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0B3D24"><link rel="manifest" href="manifest.json"><title>Les comptes des Verts — Supporter</title><link rel="stylesheet" href="style.css"><script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><div id="splashVideo" class="splash-video">
+  <video id="introVideo" autoplay muted playsinline preload="auto">
+    <source src="intro-asse.mp4" type="video/mp4">
+  </video>
+
+  <button id="skipIntro" type="button">Passer</button>
+</div><button id="installApp" style="display:none">📲 Installer l'application</button>
 <main id="app"><div class="card"><h1>Les comptes des Verts</h1><p>Chargement…</p></div></main><script>
 let deferredInstallPrompt;
 
@@ -20,4 +26,22 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('installApp').style.display = 'none';
   deferredInstallPrompt = null;
 });
+</script><script>
+const splashVideo = document.getElementById('splashVideo');
+const introVideo = document.getElementById('introVideo');
+const skipIntro = document.getElementById('skipIntro');
+
+function closeIntro() {
+  splashVideo.classList.add('splash-hide');
+
+  setTimeout(() => {
+    splashVideo.style.display = 'none';
+  }, 500);
+}
+
+skipIntro.addEventListener('click', closeIntro);
+
+introVideo.addEventListener('ended', closeIntro);
+
+introVideo.addEventListener('error', closeIntro);
 </script><script src="app.js"></script></body></html>
