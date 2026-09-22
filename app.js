@@ -57,11 +57,29 @@
     await loadProfile();
   };
 }
- async function loadProfile(){const r=await sb.rpc('claim_supporter');if(r.error||!r.data){return login('Cette adresse email n’est pas encore associée à un supporter. Demande au responsable de renseigner ton email.');}profile=Array.isArray(r.data)?r.data[0]:r.data;await renderHome();}
+async function loadProfile(){
+  const {data:{user}}=await sb.auth.getUser();
+
+  if(!user){
+    return login();
+  }
+
+  const r=await sb
+    .from('supporters')
+    .select('id,name,email,auth_user_id')
+    .eq('auth_user_id',user.id)
+    .maybeSingle();
+
+  if(r.error||!r.data){
+    return login('Ce compte n’est pas encore associé à un supporter. Demande au responsable de vérifier ton compte.');
+  }
+
+  profile=r.data;
+  await renderHome();
+}
  async function renderHome(){
   const matches=(await sb.from('matches').select('id,name,date,opponent,stadium,venue,competition,season,closed,ticketing_opens_at,match_starts_at').eq('closed',false).order('date',{ascending:true})).data||[];
   const att=(await sb.from('match_attendance').select('match_id,answer,updated_at').eq('supporter_id',profile.id)).data||[];
-  alert('SUPPORTER ID UTILISÉ : '+profile.id);
   const ticketsResult=await sb.from('tickets').select('id,match_id,date,match,tribune,price').eq('supporter_id',profile.id).eq('owner_ticket',false).order('date',{ascending:false});
 if(ticketsResult.error) alert('ERREUR BILLETS : '+ticketsResult.error.message);
 const tickets=ticketsResult.data||[];
