@@ -61,6 +61,7 @@
  async function renderHome(){
   const matches=(await sb.from('matches').select('id,name,date,opponent,stadium,venue,competition,season,closed,ticketing_opens_at,match_starts_at').eq('closed',false).order('date',{ascending:true})).data||[];
   const att=(await sb.from('match_attendance').select('match_id,answer,updated_at').eq('supporter_id',profile.id)).data||[];
+  alert('SUPPORTER ID UTILISÉ : '+profile.id);
   const ticketsResult=await sb.from('tickets').select('id,match_id,date,match,tribune,price').eq('supporter_id',profile.id).eq('owner_ticket',false).order('date',{ascending:false});
 if(ticketsResult.error) alert('ERREUR BILLETS : '+ticketsResult.error.message);
 const tickets=ticketsResult.data||[];
