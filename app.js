@@ -204,7 +204,7 @@
 
     const r=await sb
       .from('supporters')
-      .select('id,name,email,auth_user_id')
+      .select('id,name,email,auth_user_id,must_change_password')
       .eq('auth_user_id',user.id)
       .maybeSingle();
 
