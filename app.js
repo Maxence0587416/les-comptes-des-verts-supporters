@@ -217,11 +217,147 @@
     }
 
 
-    profile=r.data;
+  profile=r.data;
 
-    await loadData();
+if(profile.must_change_password){
+  return changeFirstPassword();
+}
+
+await loadData();
   }
 
+  function changeFirstPassword(){
+
+  app.innerHTML=`
+    <div class="login-screen">
+
+      <div class="login-hero">
+        <div class="login-stadium-overlay"></div>
+
+        <div class="login-brand">
+          <div class="brand-ball">⚽</div>
+
+          <h1>
+            Les comptes<br>
+            <span>des Verts</span>
+          </h1>
+
+          <div class="login-subtitle">
+            PREMIÈRE CONNEXION
+          </div>
+
+          <div class="login-line"></div>
+
+          <div class="login-passion">
+            Bienvenue ${esc(profile.name)}
+          </div>
+        </div>
+      </div>
+
+
+      <div class="login-card">
+
+        <div class="login-title">
+          <div class="login-user-icon">🔒</div>
+
+          <div>
+            <h2>Choisis ton mot de passe</h2>
+            <p>
+              Pour sécuriser ton compte, remplace ton mot de passe
+              temporaire par ton nouveau mot de passe.
+            </p>
+          </div>
+        </div>
+
+
+        <div class="login-input-wrap">
+          <span class="login-field-icon">🔒</span>
+
+          <input
+            id="newPassword"
+            class="input login-input"
+            type="password"
+            placeholder="Nouveau mot de passe"
+            autocomplete="new-password"
+          >
+        </div>
+
+
+        <div class="login-input-wrap">
+          <span class="login-field-icon">🔒</span>
+
+          <input
+            id="confirmPassword"
+            class="input login-input"
+            type="password"
+            placeholder="Confirmer le mot de passe"
+            autocomplete="new-password"
+          >
+        </div>
+
+
+        <button id="saveNewPassword" class="btn yes login-button">
+          <span>Valider mon mot de passe</span>
+          <span class="login-arrow">→</span>
+        </button>
+
+
+        <div id="passwordStatus" class="status hidden"></div>
+
+      </div>
+
+    </div>
+  `;
+
+
+  document.getElementById('saveNewPassword').onclick=async()=>{
+
+    const password=document.getElementById('newPassword').value;
+    const confirmation=document.getElementById('confirmPassword').value;
+    const status=document.getElementById('passwordStatus');
+
+
+    if(password.length<8){
+      status.classList.remove('hidden');
+      status.textContent='Ton mot de passe doit contenir au moins 8 caractères.';
+      return;
+    }
+
+
+    if(password!==confirmation){
+      status.classList.remove('hidden');
+      status.textContent='Les deux mots de passe ne sont pas identiques.';
+      return;
+    }
+
+
+    const {error}=await sb.auth.updateUser({
+      password:password
+    });
+
+
+    if(error){
+      status.classList.remove('hidden');
+      status.textContent='Impossible de modifier le mot de passe : '+error.message;
+      return;
+    }
+
+
+    const updateResult=await sb.rpc('finish_first_login');
+
+
+    if(updateResult.error){
+      status.classList.remove('hidden');
+      status.textContent='Le mot de passe a été modifié, mais la première connexion n’a pas pu être finalisée.';
+      return;
+    }
+
+
+    profile.must_change_password=false;
+
+    await loadData();
+  };
+}
 
 
   /* =========================
