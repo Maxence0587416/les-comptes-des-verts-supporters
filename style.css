@@ -1255,6 +1255,16 @@ button{
    NOUVEAU DESIGN — MES COMPTES
    ======================================== */
 
+.page-content:has(.accounts-heading){
+  background-image:
+    linear-gradient(rgba(0, 45, 32, 0.18), rgba(0, 45, 32, 0.28)),
+    url("fond-comptes.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
 .accounts-heading{
   padding:19px 5px 10px;
 }
