@@ -452,21 +452,6 @@ await loadData();
     app.innerHTML=`
       <div class="supporter-app">
 
-        <header class="app-header">
-
-          <div class="app-brand">
-            <div class="app-logo">⚽</div>
-
-            <div>
-              <div class="app-title">Les comptes des Verts</div>
-              <div class="app-user">
-                Bonjour ${esc(profile.name)}
-              </div>
-            </div>
-          </div>
-
-        </header>
-
 
         <main id="pageContent" class="page-content"></main>
 
@@ -618,28 +603,24 @@ await loadData();
 </section>
 
 
-      <section class="quick-grid">
+     <section class="home-next-match">
 
-        <button
-          class="quick-card"
-          onclick="changePage('matches')"
-        >
-          <span class="quick-icon">⚽</span>
-          <span class="quick-label">Prochains matchs</span>
-          <strong>${visibleMatches.length}</strong>
-        </button>
+  <div class="home-section-title">
+    <h2>Prochain match</h2>
+    <span>Ligue 2 BKT</span>
+  </div>
 
+  ${
+    nextMatch
+    ? renderHomeMatch(nextMatch)
+    : `
+      <div class="empty-state">
+        Aucun prochain match pour le moment.
+      </div>
+    `
+  }
 
-        <button
-          class="quick-card"
-          onclick="changePage('accounts')"
-        >
-          <span class="quick-icon">🎟️</span>
-          <span class="quick-label">Mes billets</span>
-          <strong>${tickets.length}</strong>
-        </button>
-
-      </section>
+</section>
 
 
       <section class="balance-card">
@@ -775,8 +756,155 @@ await loadData();
     `;
   }
 
+function getTeamLogo(teamName){
 
+  const name=(teamName||'').toLowerCase();
 
+  const logos={
+    'clermont':'logos/clermont-foot.webp',
+    'grenoble':'logos/logo-grenoble.webp',
+    'montpellier':'logos/logo-montpellier.webp',
+    'rodez':'logos/rodez-logo.webp',
+    'nantes':'logos/Nantes-logo.webp',
+    'laval':'logos/logo-stade-lavallois.webp',
+    'nancy':'logos/logo-as-nancy.webp',
+    'boulogne':'logos/logo-boulogne.webp',
+    'dunkerque':'logos/logo-Dunkerque.webp',
+    'metz':'logos/fc-metz-logo.webp',
+    'sochaux':'logos/sochaux-logo.webp',
+    'guingamp':'logos/guingamp-logo.webp',
+    'red star':'logos/Red-Star-FC-logo.webp',
+    'annecy':'logos/Logo-Annecy-foot.webp',
+    'dijon':'logos/dijon-logo.webp',
+    'reims':'logos/Stade-de-Reims-logo.webp',
+    'pau':'logos/logo-pau.webp'
+  };
+
+  for(const key in logos){
+    if(name.includes(key)){
+      return logos[key];
+    }
+  }
+
+  return '';
+}
+
+  function renderHomeMatch(m){
+
+  if(!m){
+    return `
+      <div class="empty-state">
+        Aucun prochain match pour le moment.
+      </div>
+    `;
+  }
+
+  const opponent=m.opponent||'Adversaire';
+  const opponentLogo=getTeamLogo(opponent);
+
+  const matchDate=m.match_starts_at
+    ? new Date(m.match_starts_at)
+    : (m.date ? new Date(m.date+'T12:00:00') : null);
+
+  const dateLabel=matchDate
+    ? matchDate.toLocaleDateString(
+        'fr-FR',
+        {
+          weekday:'long',
+          day:'numeric',
+          month:'long',
+          year:'numeric'
+        }
+      )
+    : '';
+
+  const timeLabel=m.match_starts_at
+    ? matchDate.toLocaleTimeString(
+        'fr-FR',
+        {
+          hour:'2-digit',
+          minute:'2-digit'
+        }
+      )
+    : '';
+
+  const place=m.venue||m.stadium||'Stade Geoffroy-Guichard';
+
+  return `
+
+    <div class="home-match-card">
+
+      <div class="home-match-competition">
+        ${esc(m.competition||'Ligue 2 BKT')}
+      </div>
+
+      <div class="home-match-teams">
+
+        <div class="home-team">
+          <img
+            src="logos/LogoASSE.webp"
+            alt="ASSE"
+            class="home-team-logo"
+          >
+          <strong>ASSE</strong>
+          <span>Saint-Étienne</span>
+        </div>
+
+        <div class="home-match-center">
+
+          <strong class="home-match-date">
+            ${esc(dateLabel)}
+          </strong>
+
+          ${
+            timeLabel
+            ? `
+              <div class="home-match-time">
+                ${esc(timeLabel)}
+              </div>
+            `
+            : ''
+          }
+
+          <div class="home-match-place">
+            🏟️ ${esc(place)}
+          </div>
+
+        </div>
+
+        <div class="home-team">
+
+          ${
+            opponentLogo
+            ? `
+              <img
+                src="${esc(opponentLogo)}"
+                alt="${esc(opponent)}"
+                class="home-team-logo"
+              >
+            `
+            : ''
+          }
+
+          <strong>${esc(opponent)}</strong>
+
+        </div>
+
+      </div>
+
+      <button
+        class="home-match-button"
+        onclick="changePage('matches')"
+      >
+        🎟️ Voir le match
+        <span>›</span>
+      </button>
+
+    </div>
+
+  `;
+}
+  
   function renderMatchCard(m,compact=false){
 
     const {tickets,attMap}=appData;
