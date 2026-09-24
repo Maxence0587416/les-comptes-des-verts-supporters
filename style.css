@@ -1251,3 +1251,379 @@ button{
     padding:21px 18px;
   }
 }
+/* ========================================
+   NOUVEAU DESIGN — MES COMPTES
+   ======================================== */
+
+.accounts-heading{
+  padding:19px 5px 10px;
+}
+
+.accounts-heading .section-eyebrow{
+  color:var(--green);
+}
+
+.accounts-heading h1{
+  margin:5px 0 4px;
+  color:var(--green-deep);
+  font-size:30px;
+  line-height:1.05;
+  letter-spacing:-1px;
+}
+
+.accounts-heading p{
+  max-width:430px;
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+}
+
+
+/* Carte principale du solde */
+
+.account-balance-card{
+  position:relative;
+  overflow:hidden;
+  margin-top:5px;
+  padding:25px 22px 23px;
+  border-radius:23px;
+  color:white;
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      rgba(255,255,255,.13) 0 90px,
+      transparent 91px
+    ),
+    linear-gradient(
+      135deg,
+      #064b2b 0%,
+      #08743a 55%,
+      #11984a 100%
+    );
+  box-shadow:0 12px 30px rgba(3,53,31,.18);
+}
+
+.account-balance-card::after{
+  content:"€";
+  position:absolute;
+  right:18px;
+  bottom:-35px;
+  color:rgba(255,255,255,.07);
+  font-size:135px;
+  line-height:1;
+  font-weight:900;
+}
+
+.account-balance-label{
+  position:relative;
+  z-index:2;
+  color:#cbe7d5;
+  font-size:13px;
+  font-weight:700;
+}
+
+.account-balance-amount{
+  position:relative;
+  z-index:2;
+  margin-top:5px;
+  font-size:42px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-1.5px;
+}
+
+.account-balance-status{
+  position:relative;
+  z-index:2;
+  display:inline-flex;
+  margin-top:12px;
+  padding:6px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  font-size:12px;
+  font-weight:800;
+}
+
+.account-balance-card.is-due .account-balance-status{
+  background:rgba(255,235,230,.16);
+}
+
+.account-balance-card.is-refund{
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      rgba(255,255,255,.13) 0 90px,
+      transparent 91px
+    ),
+    linear-gradient(
+      135deg,
+      #075b35,
+      #0b8a48
+    );
+}
+
+
+/* Détail du compte */
+
+.account-detail-card{
+  overflow:hidden;
+  margin-top:13px;
+  padding:6px 18px;
+  background:white;
+  border:1px solid var(--border);
+  border-radius:19px;
+  box-shadow:0 5px 18px rgba(20,50,35,.05);
+}
+
+.account-detail-title{
+  padding:15px 0 11px;
+  color:var(--green-deep);
+  border-bottom:1px solid #edf1ee;
+  font-size:15px;
+  font-weight:900;
+}
+
+.account-detail-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  min-height:46px;
+  border-bottom:1px solid #edf1ee;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.account-detail-row:last-child{
+  border-bottom:0;
+}
+
+.account-detail-row strong{
+  color:var(--text);
+  white-space:nowrap;
+  font-size:14px;
+}
+
+.account-detail-total{
+  color:var(--text);
+  font-weight:800;
+}
+
+.account-detail-total strong{
+  color:var(--green-deep);
+}
+
+.account-payment-row strong{
+  color:var(--green);
+}
+
+.account-final-row{
+  margin:0 -18px;
+  padding:0 18px;
+  background:#f7faf8;
+  color:var(--green-deep);
+  font-weight:900;
+}
+
+.account-final-row strong{
+  font-size:17px;
+}
+
+.account-final-row.is-due strong{
+  color:var(--red);
+}
+
+.account-final-row.is-refund strong,
+.account-final-row.is-ok strong{
+  color:var(--green);
+}
+
+
+/* Historique */
+
+.account-history-section{
+  margin-top:25px;
+  padding-bottom:10px;
+}
+
+.account-history-heading{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 5px;
+}
+
+.account-history-heading .section-eyebrow{
+  color:var(--green);
+}
+
+.account-history-heading h2{
+  margin:3px 0 0;
+  color:var(--green-deep);
+  font-size:22px;
+  letter-spacing:-.5px;
+}
+
+.history-count{
+  display:flex;
+  min-width:30px;
+  height:30px;
+  align-items:center;
+  justify-content:center;
+  padding:0 9px;
+  border-radius:999px;
+  background:#e8f5ed;
+  color:var(--green-dark);
+  font-size:12px;
+  font-weight:900;
+}
+
+
+/* Onglets */
+
+.history-tabs{
+  display:flex;
+  gap:7px;
+  margin:13px 0 12px;
+  overflow-x:auto;
+  padding:1px 1px 4px;
+  scrollbar-width:none;
+}
+
+.history-tabs::-webkit-scrollbar{
+  display:none;
+}
+
+.history-tab{
+  flex:0 0 auto;
+  padding:8px 13px;
+  border:1px solid #dce5df;
+  border-radius:999px;
+  background:white;
+  color:#68766e;
+  font-size:11px;
+  font-weight:800;
+}
+
+.history-tab.active{
+  border-color:var(--green);
+  background:var(--green);
+  color:white;
+}
+
+
+/* Lignes de l'historique */
+
+.account-history-list{
+  display:grid;
+  gap:9px;
+}
+
+.history-card{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  background:white;
+  border:1px solid var(--border);
+  border-radius:15px;
+  box-shadow:0 3px 12px rgba(20,50,35,.04);
+}
+
+.history-icon{
+  display:flex;
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:#eaf6ee;
+  color:var(--green-dark);
+  font-size:18px;
+  font-weight:900;
+}
+
+.history-icon.payment{
+  background:#eef6f1;
+}
+
+.history-content{
+  display:flex;
+  flex:1;
+  min-width:0;
+  flex-direction:column;
+}
+
+.history-content strong{
+  overflow:hidden;
+  color:var(--text);
+  font-size:13px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.history-content span{
+  overflow:hidden;
+  color:var(--muted);
+  font-size:11px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.history-content small{
+  margin-top:2px;
+  color:#9aa49e;
+  font-size:10px;
+}
+
+.history-amount{
+  flex:0 0 auto;
+  color:var(--red);
+  font-size:13px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.history-amount.payment{
+  color:var(--green);
+}
+
+
+/* Adaptation petits téléphones */
+
+@media(max-width:380px){
+
+  .account-balance-card{
+    padding:22px 18px;
+  }
+
+  .account-balance-amount{
+    font-size:37px;
+  }
+
+  .account-detail-card{
+    padding-left:15px;
+    padding-right:15px;
+  }
+
+  .account-final-row{
+    margin-left:-15px;
+    margin-right:-15px;
+    padding-left:15px;
+    padding-right:15px;
+  }
+
+  .history-card{
+    gap:9px;
+    padding:12px;
+  }
+
+  .history-icon{
+    width:38px;
+    height:38px;
+    flex-basis:38px;
+  }
+
+}
