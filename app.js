@@ -926,6 +926,28 @@ await loadData();
      COMPTES
      ========================= */
 
+  window.filterHistory=function(type,button){
+
+  document
+    .querySelectorAll('.history-tab')
+    .forEach(tab=>tab.classList.remove('active'));
+
+  button.classList.add('active');
+
+  document
+    .querySelectorAll('.account-history-list .history-card')
+    .forEach(card=>{
+
+      if(type==='all' || card.dataset.type===type){
+        card.style.display='flex';
+      }else{
+        card.style.display='none';
+      }
+
+    });
+
+};
+  
   function renderAccounts(){
 
   const {
@@ -935,8 +957,7 @@ await loadData();
     paid
   }=appData;
 
-  const shopTotal=0;
-  const totalDue=ticketTotal+shopTotal;
+  const totalDue=ticketTotal;
   const balance=totalDue-paid;
 
   let balanceLabel='Compte à jour';
@@ -1025,11 +1046,6 @@ await loadData();
       </div>
 
 
-      <div class="account-detail-row">
-        <span>Total des achats</span>
-        <strong>${fmt(shopTotal)}</strong>
-      </div>
-
 
       <div class="account-detail-row account-detail-total">
         <span>Total à payer</span>
@@ -1042,11 +1058,6 @@ await loadData();
         <strong>${fmt(paid)}</strong>
       </div>
 
-
-      <div class="account-detail-row">
-        <span>Remboursements</span>
-        <strong>${balance<0?fmt(Math.abs(balance)):fmt(0)}</strong>
-      </div>
 
 
       <div class="account-detail-row account-final-row ${balanceClass}">
@@ -1085,12 +1096,28 @@ await loadData();
       </div>
 
 
-      <div class="history-tabs">
-        <button class="history-tab active">Tous</button>
-        <button class="history-tab">Billets</button>
-        <button class="history-tab">Achats</button>
-        <button class="history-tab">Paiements</button>
-      </div>
+   <div class="history-tabs">
+  <button
+    class="history-tab active"
+    onclick="filterHistory('all',this)"
+  >
+    Tous
+  </button>
+
+  <button
+    class="history-tab"
+    onclick="filterHistory('ticket',this)"
+  >
+    Billets
+  </button>
+
+  <button
+    class="history-tab"
+    onclick="filterHistory('payment',this)"
+  >
+    Paiements
+  </button>
+</div>
 
 
       <div class="account-history-list">
@@ -1099,7 +1126,7 @@ await loadData();
           history.length
           ? history.map(item=>`
 
-              <article class="history-card">
+             <article class="history-card" data-type="${item.type}">
 
                 <div class="history-icon ${item.type}">
                   ${item.icon}
