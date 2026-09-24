@@ -1822,3 +1822,49 @@ button{
 .home-match-button:active{
   transform:scale(.98);
 }
+
+
+/* ========================================
+   MES COMPTES — CORRECTION LARGEUR MOBILE
+   ======================================== */
+
+.account-balance-card,
+.account-detail-card,
+.account-history-section,
+.account-history-list,
+.history-card{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+.account-history-section,
+.account-history-list{
+  min-width:0;
+}
+
+.history-card{
+  overflow:hidden;
+}
+
+.history-content{
+  flex:1 1 0;
+  min-width:0;
+  overflow:hidden;
+}
+
+.history-content strong,
+.history-content span,
+.history-content small{
+  display:block;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.history-amount{
+  flex:0 0 auto;
+  min-width:max-content;
+  white-space:nowrap;
+}
