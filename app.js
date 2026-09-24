@@ -929,160 +929,225 @@ await loadData();
 
   function renderAccounts(){
 
-    const {
-      tickets,
-      pays,
-      ticketTotal,
-      paid,
-      remaining
-    }=appData;
+  const {
+    tickets,
+    pays,
+    ticketTotal,
+    paid
+  }=appData;
 
+  const shopTotal=0;
+  const totalDue=ticketTotal+shopTotal;
+  const balance=totalDue-paid;
 
-    return `
+  let balanceLabel='Compte à jour';
+  let balanceClass='is-ok';
+  let balanceAmount=fmt(0);
 
-      <section class="page-heading">
-
-        <div class="section-eyebrow">
-          MES COMPTES
-        </div>
-
-        <h1>
-          Billets & remboursements
-        </h1>
-
-      </section>
-
-
-      <section class="account-summary">
-
-        <div class="summary-main">
-
-          <span>Reste à payer</span>
-
-          <strong>
-            ${fmt(remaining)}
-          </strong>
-
-        </div>
-
-
-        <div class="summary-details">
-
-          <div>
-            <span>Total billets</span>
-            <strong>${fmt(ticketTotal)}</strong>
-          </div>
-
-          <div>
-            <span>Total remboursé</span>
-            <strong>${fmt(paid)}</strong>
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <section class="section-block">
-
-        <h2>Mes billets</h2>
-
-        ${
-          tickets.length
-          ? tickets.map(t=>`
-
-              <article class="ticket-card">
-
-                <div class="ticket-icon">
-                  🎟️
-                </div>
-
-                <div class="ticket-content">
-
-                  <strong>
-                    ${esc(t.match||'Match')}
-                  </strong>
-
-                  <span>
-                    ${esc(t.date||'Date non renseignée')}
-                  </span>
-
-                  <span>
-                    ${esc(
-                      t.tribune||
-                      'Tribune à confirmer'
-                    )}
-                  </span>
-
-                </div>
-
-                <div class="ticket-price">
-                  ${fmt(t.price)}
-                </div>
-
-              </article>
-
-            `).join('')
-          : `
-            <div class="empty-state">
-              Aucun billet attribué pour le moment.
-            </div>
-          `
-        }
-
-      </section>
-
-
-      <section class="section-block">
-
-        <h2>Mes remboursements</h2>
-
-        ${
-          pays.length
-          ? pays.map(p=>`
-
-              <article class="payment-card">
-
-                <div class="payment-icon">
-                  €
-                </div>
-
-                <div class="payment-content">
-
-                  <strong>
-                    ${esc(
-                      p.note||
-                      'Remboursement'
-                    )}
-                  </strong>
-
-                  <span>
-                    ${esc(
-                      p.date||
-                      'Date non renseignée'
-                    )}
-                  </span>
-
-                </div>
-
-                <div class="payment-amount">
-                  ${fmt(p.amount)}
-                </div>
-
-              </article>
-
-            `).join('')
-          : `
-            <div class="empty-state">
-              Aucun remboursement enregistré.
-            </div>
-          `
-        }
-
-      </section>
-    `;
+  if(balance>0){
+    balanceLabel='À régler';
+    balanceClass='is-due';
+    balanceAmount=fmt(balance);
+  }else if(balance<0){
+    balanceLabel='À rembourser';
+    balanceClass='is-refund';
+    balanceAmount=fmt(Math.abs(balance));
   }
 
+  const history=[
+    ...tickets.map(t=>({
+      type:'ticket',
+      icon:'🎟️',
+      title:t.match||'Billet de match',
+      detail:t.tribune||'Tribune à confirmer',
+      date:t.date||'',
+      amount:Number(t.price||0)
+    })),
+
+    ...pays.map(p=>({
+      type:'payment',
+      icon:'€',
+      title:p.note||'Paiement',
+      detail:'Paiement enregistré',
+      date:p.date||'',
+      amount:-Number(p.amount||0)
+    }))
+  ].sort((a,b)=>
+    String(b.date||'').localeCompare(String(a.date||''))
+  );
+
+  return `
+
+    <section class="accounts-heading">
+
+      <div>
+        <div class="section-eyebrow">
+          MON ESPACE FINANCIER
+        </div>
+
+        <h1>Mes comptes</h1>
+
+        <p>
+          Retrouve simplement tes billets, tes paiements
+          et ton solde actuel.
+        </p>
+      </div>
+
+    </section>
+
+
+    <section class="account-balance-card ${balanceClass}">
+
+      <div class="account-balance-label">
+        Mon solde actuel
+      </div>
+
+      <div class="account-balance-amount">
+        ${balanceAmount}
+      </div>
+
+      <div class="account-balance-status">
+        ${balanceLabel}
+      </div>
+
+    </section>
+
+
+    <section class="account-detail-card">
+
+      <div class="account-detail-title">
+        Détail de mon compte
+      </div>
+
+
+      <div class="account-detail-row">
+        <span>Total des billets</span>
+        <strong>${fmt(ticketTotal)}</strong>
+      </div>
+
+
+      <div class="account-detail-row">
+        <span>Total des achats</span>
+        <strong>${fmt(shopTotal)}</strong>
+      </div>
+
+
+      <div class="account-detail-row account-detail-total">
+        <span>Total à payer</span>
+        <strong>${fmt(totalDue)}</strong>
+      </div>
+
+
+      <div class="account-detail-row account-payment-row">
+        <span>Total des paiements</span>
+        <strong>${fmt(paid)}</strong>
+      </div>
+
+
+      <div class="account-detail-row">
+        <span>Remboursements</span>
+        <strong>${balance<0?fmt(Math.abs(balance)):fmt(0)}</strong>
+      </div>
+
+
+      <div class="account-detail-row account-final-row ${balanceClass}">
+        <span>
+          ${
+            balance>0
+            ? 'Solde restant'
+            : balance<0
+            ? 'À me rembourser'
+            : 'Solde restant'
+          }
+        </span>
+
+        <strong>${balanceAmount}</strong>
+      </div>
+
+    </section>
+
+
+    <section class="account-history-section">
+
+      <div class="account-history-heading">
+
+        <div>
+          <div class="section-eyebrow">
+            MES OPÉRATIONS
+          </div>
+
+          <h2>Historique</h2>
+        </div>
+
+        <span class="history-count">
+          ${history.length}
+        </span>
+
+      </div>
+
+
+      <div class="history-tabs">
+        <button class="history-tab active">Tous</button>
+        <button class="history-tab">Billets</button>
+        <button class="history-tab">Achats</button>
+        <button class="history-tab">Paiements</button>
+      </div>
+
+
+      <div class="account-history-list">
+
+        ${
+          history.length
+          ? history.map(item=>`
+
+              <article class="history-card">
+
+                <div class="history-icon ${item.type}">
+                  ${item.icon}
+                </div>
+
+                <div class="history-content">
+
+                  <strong>
+                    ${esc(item.title)}
+                  </strong>
+
+                  <span>
+                    ${esc(item.detail)}
+                  </span>
+
+                  ${
+                    item.date
+                    ? `<small>${esc(item.date)}</small>`
+                    : ''
+                  }
+
+                </div>
+
+                <div class="history-amount ${item.amount<0?'payment':''}">
+                  ${
+                    item.amount<0
+                    ? '- '+fmt(Math.abs(item.amount))
+                    : '+ '+fmt(item.amount)
+                  }
+                </div>
+
+              </article>
+
+            `).join('')
+          : `
+              <div class="empty-state">
+                Aucune opération enregistrée pour le moment.
+              </div>
+            `
+        }
+
+      </div>
+
+    </section>
+
+  `;
+}
 
 
   /* =========================
