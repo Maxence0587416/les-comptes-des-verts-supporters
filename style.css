@@ -1671,3 +1671,144 @@ button{
   font-size:16px;
   font-weight:500;
 }
+
+
+/* =========================
+   ACCUEIL — PROCHAIN MATCH
+   ========================= */
+
+.home-next-match{
+  margin:22px 0;
+}
+
+.home-section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.home-section-title h2{
+  margin:0;
+  font-size:21px;
+  font-weight:900;
+  color:#102018;
+}
+
+.home-section-title span{
+  padding:6px 10px;
+  border-radius:999px;
+  background:#e7f4ec;
+  color:#08783f;
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.home-match-card{
+  background:#fff;
+  border-radius:22px;
+  padding:18px;
+  box-shadow:0 8px 28px rgba(0,0,0,.09);
+  border:1px solid rgba(0,0,0,.05);
+}
+
+.home-match-competition{
+  text-align:center;
+  color:#078343;
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+  margin-bottom:18px;
+}
+
+.home-match-teams{
+  display:grid;
+  grid-template-columns:1fr 1.25fr 1fr;
+  align-items:center;
+  gap:8px;
+}
+
+.home-team{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:4px;
+}
+
+.home-team-logo{
+  width:64px;
+  height:64px;
+  object-fit:contain;
+  margin-bottom:5px;
+}
+
+.home-team strong{
+  max-width:100%;
+  font-size:14px;
+  line-height:1.15;
+  color:#102018;
+}
+
+.home-team span{
+  font-size:10px;
+  color:#728078;
+}
+
+.home-match-center{
+  min-width:0;
+  text-align:center;
+}
+
+.home-match-date{
+  display:block;
+  font-size:12px;
+  line-height:1.3;
+  color:#34483d;
+  text-transform:capitalize;
+}
+
+.home-match-time{
+  margin:5px 0;
+  font-size:25px;
+  line-height:1;
+  font-weight:950;
+  color:#08783f;
+}
+
+.home-match-place{
+  margin-top:7px;
+  font-size:10px;
+  line-height:1.25;
+  color:#748078;
+}
+
+.home-match-button{
+  width:100%;
+  margin-top:18px;
+  padding:14px 16px;
+  border:0;
+  border-radius:14px;
+  background:#078343;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  font-size:15px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.home-match-button span{
+  font-size:24px;
+  line-height:12px;
+}
+
+.home-match-button:active{
+  transform:scale(.98);
+}
