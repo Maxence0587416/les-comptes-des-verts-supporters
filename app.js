@@ -649,31 +649,7 @@ await loadData();
       </section>
 
 
-      <section class="section-block">
-
-        <div class="section-title-row">
-          <h2>Prochain match</h2>
-
-          <button
-            class="text-link"
-            onclick="changePage('matches')"
-          >
-            Voir tout
-          </button>
-        </div>
-
-
-        ${
-          nextMatch
-          ? renderMatchCard(nextMatch,true)
-          : `
-            <div class="empty-state">
-              Aucun match ouvert pour le moment.
-            </div>
-          `
-        }
-
-      </section>
+   
     `;
   }
 
