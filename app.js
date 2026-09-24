@@ -592,6 +592,7 @@ await loadData();
       attMap
     }=appData;
 
+    const firstName=(profile?.name||'Supporter').trim().split(' ')[0];
 
     const visibleMatches=getVisibleMatches(matches,attMap);
 
@@ -600,21 +601,21 @@ await loadData();
 
     return `
 
-      <section class="hero-card">
+     <section class="home-hero">
 
-        <div class="hero-label">
-          MON ESPACE SUPPORTER
-        </div>
+  <div class="home-welcome">
 
-        <h1>
-          Allez les Verts !
-        </h1>
+    <h1>
+      Bonjour ${esc(firstName)} 👋
+    </h1>
 
-        <p>
-          Retrouve ici tes prochains matchs et tes billets.
-        </p>
+    <p>
+      Bienvenue sur ton espace Verts !
+    </p>
 
-      </section>
+  </div>
+
+</section>
 
 
       <section class="quick-grid">
