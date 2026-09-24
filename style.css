@@ -1627,3 +1627,47 @@ button{
   }
 
 }
+
+/* =========================
+   NOUVEL ACCUEIL
+   ========================= */
+
+.home-hero{
+  position:relative;
+  min-height:430px;
+  margin:-18px -16px 18px;
+  padding:0 20px 28px;
+  display:flex;
+  align-items:flex-end;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 45%,
+      rgba(0,45,30,.15) 65%,
+      rgba(0,45,30,.75) 100%
+    ),
+    url("fond site accueil.png") center top / cover no-repeat;
+  border-radius:0 0 28px 28px;
+  overflow:hidden;
+}
+
+.home-welcome{
+  position:relative;
+  z-index:2;
+  width:100%;
+  color:white;
+  text-shadow:0 2px 8px rgba(0,0,0,.65);
+}
+
+.home-welcome h1{
+  margin:0 0 5px;
+  font-size:27px;
+  line-height:1.1;
+  font-weight:900;
+}
+
+.home-welcome p{
+  margin:0;
+  font-size:16px;
+  font-weight:500;
+}
