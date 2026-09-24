@@ -383,7 +383,6 @@ await loadData();
       .from('tickets')
       .select('id,match_id,date,match,tribune,price')
       .eq('supporter_id',profile.id)
-      .eq('owner_ticket',false)
       .order('date',{ascending:false});
 
 
