@@ -635,8 +635,8 @@ await loadData();
           </div>
 
           <div class="small">
-            Reste à payer
-          </div>
+  ${remaining > 0 ? 'Reste à payer' : 'Compte à jour'}
+</div>
         </div>
 
         <button
