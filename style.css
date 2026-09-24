@@ -1266,7 +1266,7 @@ button{
 }
 
 .accounts-heading{
-  padding:19px 5px 10px;
+  display:none;
 }
 
 .accounts-heading .section-eyebrow{
