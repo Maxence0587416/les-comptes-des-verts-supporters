@@ -1267,7 +1267,7 @@ button{
 }
 
 .accounts-heading{
-  display:none;
+  display:block;
 }
 
 .accounts-heading .section-eyebrow{
