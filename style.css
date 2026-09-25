@@ -1261,7 +1261,7 @@ button{
     linear-gradient(rgba(0, 45, 32, 0.18), rgba(0, 45, 32, 0.28)),
     url("fond-comptes.png");
   background-size:100% auto;
-  background-position: center top;
+  background-position: center -190px;
   background-repeat: no-repeat;
   background-attachment: scroll;
   padding-top:190px;
