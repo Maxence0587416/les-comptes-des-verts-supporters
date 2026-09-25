@@ -1275,6 +1275,12 @@ button{
   overflow:hidden;
 }
 
+.accounts-heading .section-eyebrow,
+.accounts-heading h1,
+.accounts-heading p{
+  display:none !important;
+}
+
 .accounts-heading .section-eyebrow{
   color:var(--green);
 }
