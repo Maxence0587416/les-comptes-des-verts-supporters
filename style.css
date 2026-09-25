@@ -1256,6 +1256,7 @@ button{
    ======================================== */
 
 .page-content:has(.accounts-heading){
+  background-color:#003d2b;
   background-image:
     linear-gradient(rgba(0, 45, 32, 0.18), rgba(0, 45, 32, 0.28)),
     url("fond-comptes.png");
