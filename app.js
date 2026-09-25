@@ -1103,23 +1103,6 @@ function getTeamLogo(teamName){
 
   return `
 
-    <section class="accounts-heading">
-
-      <div>
-        <div class="section-eyebrow">
-          MON ESPACE FINANCIER
-        </div>
-
-        <h1>Mes comptes</h1>
-
-        <p>
-          Retrouve simplement tes billets, tes paiements
-          et ton solde actuel.
-        </p>
-      </div>
-
-    </section>
-
 
     <section class="account-balance-card ${balanceClass}">
 
