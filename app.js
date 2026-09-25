@@ -1103,7 +1103,7 @@ function getTeamLogo(teamName){
 
   return `
 
-
+    <section class="accounts-heading"></section>
     <section class="account-balance-card ${balanceClass}">
 
       <div class="account-balance-label">
