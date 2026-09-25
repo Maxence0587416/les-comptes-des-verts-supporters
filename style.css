@@ -1263,6 +1263,7 @@ button{
   background-position: center top;
   background-repeat: no-repeat;
   background-attachment: scroll;
+  padding-top:190px;
 }
 
 .accounts-heading{
