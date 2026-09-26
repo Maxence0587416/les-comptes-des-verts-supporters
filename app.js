@@ -743,19 +743,19 @@ const filteredMatches=
     <div class="matches-tabs">
   <button
     class="matches-tab ${currentMatchFilter==='upcoming'?'active':''}"
-    onclick="window.matchFilter='upcoming';renderApp()">
+    onclick="window.matchFilter='upcoming';renderPage()">
     À venir (${upcomingMatches.length})
   </button>
 
   <button
     class="matches-tab ${currentMatchFilter==='past'?'active':''}"
-    onclick="window.matchFilter='past';renderApp()">
+    onclick="window.matchFilter='past';renderPage()">
     Passés (${pastMatches.length})
   </button>
 
   <button
     class="matches-tab ${currentMatchFilter==='all'?'active':''}"
-    onclick="window.matchFilter='all';renderApp()">
+    onclick="window.matchFilter='all';renderPage()">
     Tous (${matches.length})
   </button>
 </div>
