@@ -21,7 +21,6 @@
   let currentPage='home';
   let appData=null;
 
-
   /* =========================
      CONNEXION
      ========================= */
