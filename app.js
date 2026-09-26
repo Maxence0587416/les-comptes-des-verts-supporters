@@ -699,7 +699,7 @@ await loadData();
 
     return `
 
-      <section class="page-heading">
+      <section class="page-heading matches-heading">
 
         <div class="section-eyebrow">
           SAISON EN COURS
@@ -714,7 +714,7 @@ await loadData();
       </section>
 
 
-      <section class="section-block">
+      <section class="section-block matches-list">
 
         ${
           visibleMatches.length
