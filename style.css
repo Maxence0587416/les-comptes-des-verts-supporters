@@ -1880,3 +1880,19 @@ button{
   min-width:max-content;
   white-space:nowrap;
 }
+
+/* ==========================================
+   NOUVEAU DESIGN — PAGE MES MATCHS
+   ========================================== */
+
+.page-content:has(.matches-heading){
+  background-color:#003d2b;
+  background-image:
+    linear-gradient(rgba(0,45,32,.20), rgba(0,45,32,.48)),
+    url("fond-matchs.png");
+  background-size:100% auto;
+  background-position:center top;
+  background-repeat:no-repeat;
+  background-attachment:scroll;
+  min-height:100vh;
+}
