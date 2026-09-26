@@ -1896,3 +1896,23 @@ button{
   background-attachment:scroll;
   min-height:100vh;
 }
+
+.matches-heading{
+  padding:22px 18px 18px;
+  margin-bottom:10px;
+}
+
+.matches-heading .section-eyebrow{
+  color:#7dffb2;
+  text-shadow:0 2px 8px rgba(0,0,0,.55);
+}
+
+.matches-heading h1{
+  color:#ffffff;
+  text-shadow:0 3px 12px rgba(0,0,0,.65);
+}
+
+.matches-heading p{
+  color:rgba(255,255,255,.92);
+  text-shadow:0 2px 8px rgba(0,0,0,.65);
+}
