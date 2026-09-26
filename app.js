@@ -369,7 +369,6 @@ await loadData();
     const matchesResult=await sb
       .from('matches')
       .select('id,name,date,opponent,stadium,venue,competition,season,closed,ticketing_opens_at,match_starts_at')
-      .eq('closed',false)
       .order('date',{ascending:true});
 
 
@@ -691,8 +690,35 @@ await loadData();
 
     const {matches,attMap}=appData;
 
+    const now=new Date();
+
+const upcomingMatches=matches.filter(m=>{
+  const matchDate=m.match_starts_at
+    ? new Date(m.match_starts_at)
+    : new Date(m.date);
+
+  return !m.closed && matchDate>=now;
+});
+
+const pastMatches=matches.filter(m=>{
+  const matchDate=m.match_starts_at
+    ? new Date(m.match_starts_at)
+    : new Date(m.date);
+
+  return m.closed || matchDate<now;
+});
+
+    const currentMatchFilter=window.matchFilter||'upcoming';
+
+const filteredMatches=
+  currentMatchFilter==='past'
+    ? pastMatches
+    : currentMatchFilter==='all'
+      ? matches
+      : upcomingMatches;
+    
     const visibleMatches=getVisibleMatches(
-      matches,
+      filteredMatches,
       attMap
     );
 
@@ -713,6 +739,26 @@ await loadData();
 
       </section>
 
+
+    <div class="matches-tabs">
+  <button
+    class="matches-tab ${currentMatchFilter==='upcoming'?'active':''}"
+    onclick="window.matchFilter='upcoming';renderApp()">
+    À venir (${upcomingMatches.length})
+  </button>
+
+  <button
+    class="matches-tab ${currentMatchFilter==='past'?'active':''}"
+    onclick="window.matchFilter='past';renderApp()">
+    Passés (${pastMatches.length})
+  </button>
+
+  <button
+    class="matches-tab ${currentMatchFilter==='all'?'active':''}"
+    onclick="window.matchFilter='all';renderApp()">
+    Tous (${matches.length})
+  </button>
+</div>
 
       <section class="section-block matches-list">
 
