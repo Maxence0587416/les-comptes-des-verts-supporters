@@ -1986,7 +1986,6 @@ button{
   padding:4px;
   background:rgba(10,48,36,.88);
   border-radius:14px;
-  backdrop-filter:blur(8px);
 }
 
 .matches-tab{
