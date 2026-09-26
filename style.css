@@ -15,7 +15,7 @@
 *{
   box-sizing:border-box;
 }
-
+.matches-tab{
 html{
   background:var(--cream);
 }
@@ -1995,7 +1995,7 @@ button{
   padding:8px 5px;
   border-radius:10px;
   background:transparent;
-  color:rgba(255,255,255,.78);
+  color:#ffffff !important;
   font-size:12px;
   font-weight:800;
   cursor:pointer;
