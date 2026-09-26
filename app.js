@@ -948,9 +948,6 @@ function getTeamLogo(teamName){
   </div>
 </div>
 
-<h3 class="match-title">
-  ${esc(m.name)}
-</h3>
 
 
         <div class="match-info">
