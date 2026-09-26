@@ -748,6 +748,7 @@ const filteredMatches=
     type="button"
     class="matches-tab ${currentMatchFilter==='upcoming'?'active':''}"
     onclick="changeMatchFilter('upcoming')"
+    >
     À venir (${upcomingMatches.length})
   </button>
 
@@ -755,6 +756,7 @@ const filteredMatches=
     type="button"
     class="matches-tab ${currentMatchFilter==='past'?'active':''}"
     onclick="changeMatchFilter('past')"
+    >
     Passés (${pastMatches.length})
   </button>
 
@@ -762,6 +764,7 @@ const filteredMatches=
     type="button"
     class="matches-tab ${currentMatchFilter==='all'?'active':''}"
     onclick="changeMatchFilter('all')"
+    >
     Tous (${matches.length})
   </button>
 
