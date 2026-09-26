@@ -885,7 +885,8 @@ function getTeamLogo(teamName){
 
     const {tickets,attMap}=appData;
 
-
+    const opponentLogo=getTeamLogo(m.opponent);
+    
     const deadline=m.ticketing_opens_at
       ? new Date(m.ticketing_opens_at)
       : null;
@@ -933,9 +934,23 @@ function getTeamLogo(teamName){
         </div>
 
 
-        <h3>
-          ${esc(m.name)}
-        </h3>
+        <div class="match-teams">
+  <div class="match-team">
+    <img src="logos/LogoASSE.webp" alt="ASSE">
+    <span>ASSE</span>
+  </div>
+
+  <div class="match-versus">VS</div>
+
+  <div class="match-team">
+    ${opponentLogo ? `<img src="${opponentLogo}" alt="${esc(m.opponent)}">` : ''}
+    <span>${esc(m.opponent || 'Adversaire')}</span>
+  </div>
+</div>
+
+<h3 class="match-title">
+  ${esc(m.name)}
+</h3>
 
 
         <div class="match-info">
