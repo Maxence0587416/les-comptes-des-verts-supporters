@@ -1995,7 +1995,7 @@ button{
   padding:8px 5px;
   border-radius:10px;
   background:transparent;
-  color:#ffffff !important;
+  color:rgba(255,255,255,.78);
   font-size:12px;
   font-weight:800;
   cursor:pointer;
