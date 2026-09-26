@@ -336,7 +336,7 @@ button{
   margin-bottom:12px;
   padding:17px;
   background:
-  linear-gradient(rgba(255,255,255,.82), rgba(255,255,255,.82)),
+  linear-gradient(rgba(255,255,255,.62), rgba(255,255,255,.62)),
   url("fond-carte-match.webp") center/cover no-repeat;
   border:1px solid var(--border);
   border-radius:17px;
