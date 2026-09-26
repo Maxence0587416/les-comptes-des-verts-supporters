@@ -739,25 +739,29 @@ const filteredMatches=
 
       </section>
 
-
     <div class="matches-tabs">
+
   <button
+    type="button"
     class="matches-tab ${currentMatchFilter==='upcoming'?'active':''}"
     onclick="window.matchFilter='upcoming';renderPage()">
     À venir (${upcomingMatches.length})
   </button>
 
   <button
+    type="button"
     class="matches-tab ${currentMatchFilter==='past'?'active':''}"
     onclick="window.matchFilter='past';renderPage()">
     Passés (${pastMatches.length})
   </button>
 
   <button
+    type="button"
     class="matches-tab ${currentMatchFilter==='all'?'active':''}"
     onclick="window.matchFilter='all';renderPage()">
     Tous (${matches.length})
   </button>
+
 </div>
 
       <section class="section-block matches-list">
