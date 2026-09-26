@@ -1977,3 +1977,33 @@ button{
   font-weight:700;
   text-align:center;
 }
+
+.matches-tabs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+  margin:0 12px 12px;
+  padding:4px;
+  background:rgba(10,48,36,.88);
+  border-radius:14px;
+  backdrop-filter:blur(8px);
+}
+
+.matches-tab{
+  appearance:none;
+  border:0;
+  min-height:38px;
+  padding:8px 5px;
+  border-radius:10px;
+  background:transparent;
+  color:rgba(255,255,255,.78);
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.matches-tab.active{
+  background:#00b95b;
+  color:#ffffff;
+  box-shadow:0 3px 10px rgba(0,0,0,.18);
+}
