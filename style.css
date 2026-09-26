@@ -1954,3 +1954,26 @@ button{
   text-align:center;
   font-size:18px !important;
 }
+
+
+.match-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+
+.match-info > div{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:8px 10px;
+  background:#f3f8f5;
+  border:1px solid #e0ebe4;
+  border-radius:11px;
+  color:#456457;
+  font-size:12px;
+  font-weight:700;
+  text-align:center;
+}
