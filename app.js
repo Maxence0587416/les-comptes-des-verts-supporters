@@ -518,8 +518,12 @@ await loadData();
     });
   };
 
+  window.changeMatchFilter=function(filter){
+  window.matchFilter=filter;
+  renderPage();
+};
 
-
+  
   function renderPage(){
 
     const content=document.getElementById('pageContent');
@@ -744,21 +748,21 @@ const filteredMatches=
   <button
     type="button"
     class="matches-tab ${currentMatchFilter==='upcoming'?'active':''}"
-    onclick="window.matchFilter='upcoming';renderPage()">
+    onclick="changeMatchFilter('upcoming')"
     À venir (${upcomingMatches.length})
   </button>
 
   <button
     type="button"
     class="matches-tab ${currentMatchFilter==='past'?'active':''}"
-    onclick="window.matchFilter='past';renderPage()">
+    onclick="changeMatchFilter('past')"
     Passés (${pastMatches.length})
   </button>
 
   <button
     type="button"
     class="matches-tab ${currentMatchFilter==='all'?'active':''}"
-    onclick="window.matchFilter='all';renderPage()">
+    onclick="changeMatchFilter('all')"
     Tous (${matches.length})
   </button>
 
