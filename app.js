@@ -961,12 +961,6 @@ function getTeamLogo(teamName){
             )}
           </div>
 
-          ${
-            m.opponent
-            ? `<div>⚽ ${esc(m.opponent)}</div>`
-            : ''
-          }
-
         </div>
 
 
