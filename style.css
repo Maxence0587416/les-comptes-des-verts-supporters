@@ -953,9 +953,12 @@ button{
   min-height:100dvh;
   position:relative;
   overflow:hidden;
-  background:
-    radial-gradient(circle at 50% 22%, rgba(39,174,96,.42), transparent 32%),
-    linear-gradient(180deg,#063f27 0%,#075a35 42%,#06462c 100%);
+ background:
+  linear-gradient(
+    rgba(0,55,38,.72),
+    rgba(0,55,38,.82)
+  ),
+  url("fond-connexion.png") center/cover no-repeat;
   padding-bottom:55px;
 }
 
