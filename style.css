@@ -2008,3 +2008,31 @@ button{
   color:#ffffff;
   box-shadow:0 3px 10px rgba(0,0,0,.18);
 }
+
+
+.page-content:has(.more-heading){
+  background-color:#003d2b;
+  background-image:
+    linear-gradient(rgba(0,45,32,.20), rgba(0,45,32,.48)),
+    url("fond site accueil.png");
+  background-size:100% auto;
+  background-position:center top;
+  background-repeat:no-repeat;
+  background-attachment:scroll;
+  min-height:100vh;
+}
+
+.more-heading{
+  padding:22px 18px 18px;
+  margin-bottom:10px;
+}
+
+.more-heading .section-eyebrow{
+  color:#7dffb2;
+  text-shadow:0 2px 8px rgba(0,0,0,.55);
+}
+
+.more-heading h1{
+  color:#ffffff;
+  text-shadow:0 3px 12px rgba(0,0,0,.65);
+}
