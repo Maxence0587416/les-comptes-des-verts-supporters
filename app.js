@@ -1335,7 +1335,7 @@ function getTeamLogo(teamName){
 
     return `
 
-      <section class="page-heading">
+      <section class="page-heading more-heading">
 
         <div class="section-eyebrow">
           MON ESPACE
