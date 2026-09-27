@@ -797,7 +797,7 @@ function getTeamLogo(teamName){
     'grenoble':'logos/logo-grenoble.webp',
     'montpellier':'logos/logo-montpellier.webp',
     'rodez':'logos/rodez-logo.webp',
-    'nantes':'logos/Nantes-logo.webp',
+    'nantes':'logos/Nantes-Logo.webp',
     'laval':'logos/logo-stade-lavallois.webp',
     'nancy':'logos/logo-as-nancy.webp',
     'boulogne':'logos/logo-boulogne.webp',
