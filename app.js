@@ -373,7 +373,7 @@ await loadData();
 
     const attendanceResult=await sb
       .from('match_attendance')
-      .select('match_id,answer,updated_at')
+      .select('match_id,answer,updated_at,ticket_requested_at')
       .eq('supporter_id',profile.id);
 
 
@@ -1450,6 +1450,15 @@ function getTeamLogo(teamName){
      ========================= */
 
   window.answer=async(matchId,answer)=>{
+    
+    const previous=appData?.attendance?.find(a=>a.match_id===matchId);
+
+    const ticketRequestedAt=
+  answer==='yes'
+    ? (previous?.answer==='yes' && previous?.ticket_requested_at
+        ? previous.ticket_requested_at
+        : new Date().toISOString())
+    : null;
 
     const r=await sb
       .from('match_attendance')
@@ -1458,6 +1467,7 @@ function getTeamLogo(teamName){
           match_id:matchId,
           supporter_id:profile.id,
           answer,
+          ticket_requested_at:ticketRequestedAt,
           updated_at:new Date().toISOString()
         },
         {
