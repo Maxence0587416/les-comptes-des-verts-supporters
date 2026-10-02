@@ -941,6 +941,9 @@ function getTeamLogo(teamName){
 
     const {tickets,attMap}=appData;
 
+    const attendance=appData.att?.find(a=>a.match_id===m.id);
+    const ticketStatus=attendance?.ticket_status||'pending';
+    
     const opponentLogo=getTeamLogo(m.opponent);
     
     const deadline=m.ticketing_opens_at
@@ -1074,12 +1077,34 @@ function getTeamLogo(teamName){
             </div>
           `
           : `
-            <div class="ticket-status waiting">
-              <strong>⏳ Billet en attente</strong>
-              <span>
-                Ta demande a bien été prise en compte.
-              </span>
-            </div>
+            ${
+  ticketStatus==='assigned'
+    ? `
+      <div class="ticket-status success">
+        <strong>🎟️ Billet attribué</strong>
+        <span>
+          Ta place est confirmée pour ce match.
+        </span>
+      </div>
+    `
+    : ticketStatus==='no_ticket'
+      ? `
+        <div class="ticket-status">
+          <strong>❌ Aucun billet disponible</strong>
+          <span>
+            Désolé, aucun billet n'est disponible pour cette rencontre.
+          </span>
+        </div>
+      `
+      : `
+        <div class="ticket-status waiting">
+          <strong>⏳ Billet en attente</strong>
+          <span>
+            Ta demande a bien été prise en compte.
+          </span>
+        </div>
+      `
+}
           `
         }
 
