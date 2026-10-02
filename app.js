@@ -373,7 +373,7 @@ await loadData();
 
     const attendanceResult=await sb
       .from('match_attendance')
-      .select('match_id,answer,updated_at,ticket_requested_at')
+      .select('match_id,answer,updated_at,ticket_requested_at,ticket_status')
       .eq('supporter_id',profile.id);
 
 
