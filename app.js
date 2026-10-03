@@ -25,12 +25,25 @@
      CONNEXION
      ========================= */
 
+  let passwordRecoveryMode = false;
+
+  sb.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    passwordRecoveryMode = true;
+    showPasswordRecovery();
+  }
+});
+  
   async function boot(){
 
     const {data:{session},error}=await sb.auth.getSession();
 
     if(error) console.error(error);
 
+    if(passwordRecoveryMode){
+  return;
+}
+    
     if(session){
       await loadProfile();
       return;
@@ -39,7 +52,72 @@
     login();
   }
 
+function showPasswordRecovery(){
+  app.innerHTML=`
+    <div class="login-screen">
+      <div class="login-hero">
+        <div class="login-stadium-overlay"></div>
 
+        <div class="login-brand">
+          <div class="brand-ball">⚽</div>
+          <h1>Nouveau mot de passe</h1>
+          <p>Choisis ton nouveau mot de passe.</p>
+        </div>
+      </div>
+
+      <div class="login-card">
+        <input
+          id="newPassword"
+          type="password"
+          placeholder="Nouveau mot de passe"
+          autocomplete="new-password"
+        >
+
+        <input
+          id="confirmNewPassword"
+          type="password"
+          placeholder="Confirmer le mot de passe"
+          autocomplete="new-password"
+        >
+
+        <button type="button" onclick="saveNewPassword()">
+          Enregistrer le nouveau mot de passe
+        </button>
+
+        <div id="passwordRecoveryMsg"></div>
+      </div>
+    </div>
+  `;
+}
+
+  async function saveNewPassword(){
+  const password=document.getElementById('newPassword').value;
+  const confirmPassword=document.getElementById('confirmNewPassword').value;
+  const msg=document.getElementById('passwordRecoveryMsg');
+
+  if(password.length<6){
+    msg.textContent="Le mot de passe doit contenir au moins 6 caractères.";
+    return;
+  }
+
+  if(password!==confirmPassword){
+    msg.textContent="Les deux mots de passe ne correspondent pas.";
+    return;
+  }
+
+  const {error}=await sb.auth.updateUser({
+    password:password
+  });
+
+  if(error){
+    msg.textContent="Impossible de modifier le mot de passe : "+error.message;
+    return;
+  }
+
+  passwordRecoveryMode=false;
+  await loadProfile();
+}
+  
   function login(msg=''){
 
    app.innerHTML=`
