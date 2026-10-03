@@ -1554,7 +1554,7 @@ function getTeamLogo(teamName){
 
   window.answer=async(matchId,answer)=>{
     
-    const previous=appData?.attendance?.find(a=>a.match_id===matchId);
+    const previous=appData?.att?.find(a=>a.match_id===matchId);
 
     const ticketRequestedAt=
   answer==='yes'
