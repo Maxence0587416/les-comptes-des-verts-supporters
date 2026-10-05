@@ -20,6 +20,7 @@
   let profile=null;
   let currentPage='home';
   let appData=null;
+  const VAPID_PUBLIC_KEY='BBQ_yu44yjsf14QgXukM8a7OARhmPczoSSdkcQvWUaYCVJIypvJNNuM5JcbLuPUXo4BlgpSvGQBmRE2iZXpRyCE';
 
   /* =========================
      CONNEXION
@@ -303,6 +304,16 @@ if(profile.must_change_password){
 await loadData();
   }
 
+  function urlBase64ToUint8Array(base64String){
+  const padding='='.repeat((4-base64String.length%4)%4);
+  const base64=(base64String+padding)
+    .replace(/-/g,'+')
+    .replace(/_/g,'/');
+
+  const rawData=window.atob(base64);
+  return Uint8Array.from([...rawData].map(char=>char.charCodeAt(0)));
+}
+  
   function changeFirstPassword(){
 
   app.innerHTML=`
@@ -1493,6 +1504,13 @@ function getTeamLogo(teamName){
           <b>›</b>
         </button>
 
+        <button
+          id="enableNotifications"
+          class="more-row"
+        >
+          <span>🔔 Activer les notifications</span>
+          <b>›</b>
+        </button>
 
         <button
           id="refreshData"
@@ -1519,6 +1537,14 @@ function getTeamLogo(teamName){
 
   function bindMore(){
 
+    const notifications=document.getElementById('enableNotifications');
+
+if(notifications){
+  notifications.onclick=async()=>{
+    alert('Le système de notifications est prêt à être activé.');
+  };
+}
+    
     const refresh=document.getElementById('refreshData');
 
     if(refresh){
