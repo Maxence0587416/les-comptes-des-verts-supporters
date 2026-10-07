@@ -1541,9 +1541,40 @@ function getTeamLogo(teamName){
 
 if(notifications){
   notifications.onclick=async()=>{
-    alert('Le système de notifications est prêt à être activé.');
+    const permission=await Notification.requestPermission();
+    if(permission!=='granted') return alert('Les notifications ne sont pas autorisées sur cet appareil.');
+    const registration=await navigator.serviceWorker.ready;
+    let subscription=await registration.pushManager.getSubscription();
+    if(!subscription){
+      subscription=await registration.pushManager.subscribe({
+        userVisibleOnly:true,
+        applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
+    
+    const json=subscription.toJSON();
+    const existing=await sb.from('push_subscriptions').select('id').eq('supporter_id',profile.id).eq('endpoint',subscription.endpoint).maybeSingle();
+    const pushData={
+      supporter_id:profile.id,
+      endpoint:subscription.endpoint,
+      p256dh:json.keys?.p256dh,
+      auth:json.keys?.auth,
+      user_agent:navigator.userAgent,
+      updated_at:new Date().toISOString()
+    
   };
-}
+
+    let saveResult;
+    if(existing.data){
+      saveResult=await sb.from('push_subscriptions').update(pushData).eq('id',existing.data.id);
+    }else{
+      saveResult=await sb.from('push_subscriptions').insert(pushData);
+    }
+    if(saveResult.error) return alert('Impossible d’activer les notifications. Réessaie dans quelques instants.');
+    alert('Notifications activées avec succès 💚');
+      
+  };
+  }
     
     const refresh=document.getElementById('refreshData');
 
