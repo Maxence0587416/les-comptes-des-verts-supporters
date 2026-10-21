@@ -20,6 +20,49 @@
   let profile=null;
   let currentPage='home';
   let appData=null;
+  // Mise à jour des attributions sans toucher aux billets ou aux paiements.
+  let attendanceChannel=null;
+  let attendanceRefreshTimer=null;
+  let dataRefreshInProgress=false;
+  let dataRefreshAgain=false;
+
+  function scheduleSupporterRefresh(delay=250){
+    if(!profile || document.visibilityState==='hidden') return;
+    clearTimeout(attendanceRefreshTimer);
+    attendanceRefreshTimer=setTimeout(()=>refreshSupporterData(),delay);
+  }
+
+  async function refreshSupporterData(){
+    if(!profile) return;
+    if(dataRefreshInProgress){dataRefreshAgain=true;return;}
+    dataRefreshInProgress=true;
+    try{await loadData();}
+    catch(error){console.error('Actualisation supporter impossible :',error);}
+    finally{
+      dataRefreshInProgress=false;
+      if(dataRefreshAgain){dataRefreshAgain=false;scheduleSupporterRefresh(300);}
+    }
+  }
+
+  function listenForAttendanceChanges(){
+    if(attendanceChannel){sb.removeChannel(attendanceChannel);attendanceChannel=null;}
+    if(!profile) return;
+    attendanceChannel=sb.channel('verts-supporter-attribution-'+profile.id)
+      .on('postgres_changes',{
+        event:'*',schema:'public',table:'match_attendance',
+        filter:'supporter_id=eq.'+profile.id
+      },()=>scheduleSupporterRefresh())
+      .subscribe((status)=>{
+        if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')
+          console.warn('Temps réel indisponible ; actualisation au retour dans l’application.');
+      });
+  }
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible')scheduleSupporterRefresh(100);
+  });
+  window.addEventListener('focus',()=>scheduleSupporterRefresh(150));
+
   const VAPID_PUBLIC_KEY='BBQ_yu44yjsf14QgXukM8a7OARhmPczoSSdkcQvWUaYCVJIypvJNNuM5JcbLuPUXo4BlgpSvGQBmRE2iZXpRyCE';
 
   /* =========================
@@ -302,6 +345,7 @@ if(profile.must_change_password){
 }
 
 await loadData();
+  listenForAttendanceChanges();
   }
 
   function urlBase64ToUint8Array(base64String){
@@ -489,6 +533,12 @@ await loadData();
       alert('ERREUR PAIEMENTS : '+paymentsResult.error.message);
     }
 
+
+    if(attendanceResult.error){
+      console.error('Erreur lecture des attributions :',attendanceResult.error);
+      // Ne pas afficher de faux statuts en attente si la requête a échoué.
+      return;
+    }
 
     const matches=matchesResult.data||[];
     const att=attendanceResult.data||[];
@@ -1594,6 +1644,8 @@ if(notifications){
 
         await sb.auth.signOut();
 
+        if(attendanceChannel){sb.removeChannel(attendanceChannel);attendanceChannel=null;}
+        clearTimeout(attendanceRefreshTimer);
         profile=null;
         appData=null;
         currentPage='home';
