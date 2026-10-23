@@ -52,6 +52,13 @@
         event:'*',schema:'public',table:'match_attendance',
         filter:'supporter_id=eq.'+profile.id
       },()=>scheduleSupporterRefresh())
+      .on('postgres_changes',{
+        event:'*',schema:'public',table:'matches'
+      },()=>scheduleSupporterRefresh())
+      .on('postgres_changes',{
+        event:'*',schema:'public',table:'tickets',
+        filter:'supporter_id=eq.'+profile.id
+      },()=>scheduleSupporterRefresh())
       .subscribe((status)=>{
         if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')
           console.warn('Temps réel indisponible ; actualisation au retour dans l’application.');
@@ -517,8 +524,13 @@ await loadData();
       .order('date',{ascending:false});
 
 
+    if(matchesResult.error){
+      console.error('Erreur lecture des matchs :',matchesResult.error);
+      return;
+    }
     if(ticketsResult.error){
-      alert('ERREUR BILLETS : '+ticketsResult.error.message);
+      console.error('Erreur lecture des billets :',ticketsResult.error);
+      return;
     }
 
 
@@ -1204,7 +1216,7 @@ function getTeamLogo(teamName){
             }
 
           `
-          : ticket
+          : ticket && (!attendance || ticketStatus==='assigned')
           ? `
             <div class="ticket-status success">
               <strong>✓ Billet pris</strong>
