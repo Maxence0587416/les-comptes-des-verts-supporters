@@ -626,6 +626,14 @@ await loadData();
             <span>Matchs</span>
           </button>
 
+          <button
+            class="nav-item"
+            data-page="ticket"
+            onclick="changePage('ticket')"
+          >
+            <span class="nav-icon">🎟️</span>
+            <span>Mon billet</span>
+          </button>
 
           <button
             class="nav-item"
@@ -698,6 +706,10 @@ await loadData();
       return;
     }
 
+    if(currentPage==='ticket'){
+      content.innerHTML=renderTicket();
+      return;
+    }
 
     if(currentPage==='accounts'){
       content.innerHTML=renderAccounts();
@@ -715,7 +727,28 @@ await loadData();
     content.innerHTML=renderHome();
   }
 
+  /* =========================
+   MON BILLET
+   ========================= */
 
+function renderTicket(){
+  return `
+    <section class="page-heading">
+      <div class="section-eyebrow">
+        ESPACE SUPPORTER
+      </div>
+
+      <h1>🎟️ Mon billet</h1>
+      <p>Retrouve ici ton billet pour le prochain match.</p>
+    </section>
+
+    <section class="section-block">
+      <div class="empty-state">
+        Aucun billet disponible pour le moment.
+      </div>
+    </section>
+  `;
+}
 
   /* =========================
      ACCUEIL
