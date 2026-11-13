@@ -532,6 +532,28 @@ await loadData();
       console.error('Erreur lecture des billets :',ticketsResult.error);
       return;
     }
+  
+    // Récupération des médias des billets du supporter connecté
+    const ownTicketIds = (ticketsResult.data || [])
+      .map(ticket => ticket.id);
+
+    let ticketMedia = [];
+
+    if (ownTicketIds.length > 0) {
+      const mediaResult = await sb
+        .from('ticket_media')
+        .select('ticket_id, pdf_path, ticket_image_path, qr_image_path')
+        .in('ticket_id', ownTicketIds);
+
+      if (mediaResult.error) {
+        console.error(
+          'Erreur de chargement des billets PDF :',
+          mediaResult.error
+        );
+      } else {
+        ticketMedia = mediaResult.data || [];
+      }
+    }
 
 
     const paymentsResult=await sb
@@ -579,6 +601,7 @@ await loadData();
       matches,
       att,
       tickets,
+      ticketMedia,
       pays,
       ticketTotal,
       paid,
@@ -732,27 +755,62 @@ await loadData();
    ========================= */
 
 
+
 function renderTicket(){
+  const { tickets = [], ticketMedia = [], matches = [] } = appData;
+
+  const todayParis = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Paris',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date());
+
+  const availableTickets = tickets.filter(ticket => {
+    const match = matches.find(m => m.id === ticket.match_id);
+
+    return match &&
+      match.date >= todayParis &&
+      ticketMedia.some(media =>
+        media.ticket_id === ticket.id &&
+        (media.pdf_path || media.ticket_image_path)
+      );
+  });
+
   return `
     <div class="ticket-page">
       <section class="ticket-page-heading">
-        <div class="section-eyebrow">
-          ESPACE SUPPORTER
-        </div>
-
+        <div class="section-eyebrow">ESPACE SUPPORTER</div>
         <h1>🎟️ Mon billet</h1>
-        <p>Retrouve ici ton billet pour le prochain match.</p>
+        <p>Retrouve ici tes billets pour les prochains matchs.</p>
       </section>
 
       <section class="ticket-page-content">
-        <div class="ticket-empty-state">
-          <span class="ticket-empty-icon">🎟️</span>
-          <p>Aucun billet disponible pour le moment.</p>
-        </div>
+        ${availableTickets.length
+          ? availableTickets.map(ticket => {
+              const match = matches.find(m => m.id === ticket.match_id);
+
+              return `
+                <div class="ticket-empty-state">
+                  <h2>${esc(match.name)}</h2>
+                  <p>📅 ${esc(match.date)}</p>
+                  <p>🏟️ ${esc(ticket.tribune || 'Tribune à confirmer')}</p>
+                  <p>✅ Billet disponible</p>
+                </div>
+              `;
+            }).join('')
+          : `
+            <div class="ticket-empty-state">
+              <span class="ticket-empty-icon">🎟️</span>
+              <p>Aucun billet disponible pour le moment.</p>
+            </div>
+          `
+        }
       </section>
     </div>
   `;
 }
+
 
 
   /* =========================
