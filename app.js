@@ -731,24 +731,29 @@ await loadData();
    MON BILLET
    ========================= */
 
+
 function renderTicket(){
   return `
-    <section class="page-heading">
-      <div class="section-eyebrow">
-        ESPACE SUPPORTER
-      </div>
+    <div class="ticket-page">
+      <section class="ticket-page-heading">
+        <div class="section-eyebrow">
+          ESPACE SUPPORTER
+        </div>
 
-      <h1>🎟️ Mon billet</h1>
-      <p>Retrouve ici ton billet pour le prochain match.</p>
-    </section>
+        <h1>🎟️ Mon billet</h1>
+        <p>Retrouve ici ton billet pour le prochain match.</p>
+      </section>
 
-    <section class="section-block">
-      <div class="empty-state">
-        Aucun billet disponible pour le moment.
-      </div>
-    </section>
+      <section class="ticket-page-content">
+        <div class="ticket-empty-state">
+          <span class="ticket-empty-icon">🎟️</span>
+          <p>Aucun billet disponible pour le moment.</p>
+        </div>
+      </section>
+    </div>
   `;
 }
+
 
   /* =========================
      ACCUEIL
