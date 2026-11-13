@@ -2040,3 +2040,67 @@ button{
   position:relative;
   top:95px;
 }
+
+
+/* =========================
+   MON BILLET - FOND ASSE
+   ========================= */
+
+.ticket-page {
+  min-height: calc(100dvh - 85px);
+  padding: 30px 18px 110px;
+
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(0, 25, 15, 0.15),
+      rgba(0, 25, 15, 0.65) 65%,
+      rgba(0, 25, 15, 0.95)
+    ),
+    url("billetasse.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+}
+
+.ticket-page-heading {
+  padding-top: 30px;
+  margin-bottom: 35px;
+}
+
+.ticket-page-heading h1 {
+  font-size: 32px;
+  color: white;
+  margin: 12px 0;
+}
+
+.ticket-page-heading p {
+  color: #e5e7eb;
+}
+
+.ticket-page-content {
+  margin-top: 25px;
+}
+
+.ticket-empty-state {
+  padding: 35px 18px;
+  text-align: center;
+  border: 1px solid rgba(52, 211, 153, 0.55);
+  border-radius: 22px;
+  background: rgba(0, 30, 18, 0.75);
+  backdrop-filter: blur(8px);
+}
+
+.ticket-empty-icon {
+  display: block;
+  font-size: 36px;
+  margin-bottom: 15px;
+}
+
+.ticket-empty-state p {
+  color: white;
+  margin: 0;
+}
+
