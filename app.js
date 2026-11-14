@@ -1032,8 +1032,80 @@ const filteredMatches=
         }
 
       </section>
+      
+<button
+  type="button"
+  class="asse-calendar-fab"
+  onclick="openAsseCalendar()"
+  aria-label="Afficher le calendrier de l'ASSE"
+  title="Calendrier ASSE 2026-2027"
+>
+  <svg width="26" height="26" viewBox="0 0 24 24"
+       fill="none" stroke="currentColor"
+       stroke-width="2" stroke-linecap="round"
+       stroke-linejoin="round" aria-hidden="true">
+    <rect x="3" y="5" width="18" height="16" rx="2"/>
+    <path d="M16 3v4M8 3v4M3 10h18"/>
+    <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+  </svg>
+</button>
     `;
   }
+
+  window.openAsseCalendar = function() {
+  if (document.getElementById('asse-calendar-modal')) return;
+
+  const modal = document.createElement('div');
+  modal.id = 'asse-calendar-modal';
+  modal.className = 'asse-calendar-modal';
+
+  modal.innerHTML = `
+    <div class="asse-calendar-panel"
+         role="dialog"
+         aria-modal="true"
+         aria-label="Calendrier ASSE 2026-2027">
+
+      <div class="asse-calendar-handle"></div>
+
+      <div class="asse-calendar-header">
+        <div>
+          <h2>📅 Calendrier ASSE 26-27</h2>
+          <p>Ligue 2 BKT · Saison 2026-2027</p>
+        </div>
+
+        <button type="button"
+                class="asse-calendar-close"
+                onclick="closeAsseCalendar()"
+                aria-label="Fermer le calendrier">✕</button>
+      </div>
+
+      <div class="asse-calendar-image-container">
+        <img
+          src="ASSE%2026-27.png"
+          alt="Calendrier officiel ASSE saison 2026-2027"
+          class="asse-calendar-image"
+        >
+      </div>
+
+      <p class="asse-calendar-hint">
+        🔍 Agrandis l'image avec deux doigts pour lire les journées.
+      </p>
+    </div>
+  `;
+
+  modal.addEventListener('click', function(event) {
+    if (event.target === modal) {
+      closeAsseCalendar();
+    }
+  });
+
+  document.body.appendChild(modal);
+};
+
+window.closeAsseCalendar = function() {
+  document.getElementById('asse-calendar-modal')?.remove();
+};
+  
 
 function getTeamLogo(teamName){
 
