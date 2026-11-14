@@ -2104,3 +2104,125 @@ button{
   margin: 0;
 }
 
+
+/* ===== CALENDRIER ASSE 2026-2027 ===== */
+
+/* Bouton agenda flottant */
+.asse-calendar-fab {
+  position: fixed;
+  right: 18px;
+  bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  z-index: 90;
+  width: 58px;
+  height: 58px;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #00c86a, #007c42);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,.35);
+  cursor: pointer;
+}
+
+.asse-calendar-fab:active {
+  transform: scale(.95);
+}
+
+/* Fond sombre derrière le calendrier */
+.asse-calendar-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 12, 7, .78);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* Fenêtre compacte */
+.asse-calendar-panel {
+  width: 100%;
+  max-width: 560px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #064b33, #002c1d);
+  color: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 12px 14px calc(22px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -12px 45px rgba(0,0,0,.4);
+  overscroll-behavior: contain;
+}
+
+.asse-calendar-handle {
+  width: 44px;
+  height: 5px;
+  border-radius: 5px;
+  background: rgba(255,255,255,.45);
+  margin: 0 auto 18px;
+}
+
+.asse-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.asse-calendar-header h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.asse-calendar-header p {
+  margin: 5px 0 0;
+  color: #b7d8c9;
+  font-size: 12px;
+}
+
+.asse-calendar-close {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  background: rgba(255,255,255,.13);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Image du calendrier */
+.asse-calendar-image-container {
+  width: 100%;
+  overflow: auto;
+  border-radius: 12px;
+  background: #fff;
+  -webkit-overflow-scrolling: touch;
+}
+
+.asse-calendar-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
+}
+
+/* Indication sous l'image */
+.asse-calendar-hint {
+  font-size: 12px;
+  color: #c9dfd4;
+  text-align: center;
+  margin: 12px 0 0;
+}
+
+@media (min-width: 700px) {
+  .asse-calendar-panel {
+    border-radius: 24px;
+    margin-bottom: 24px;
+  }
+}
+
