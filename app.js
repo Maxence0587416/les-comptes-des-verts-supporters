@@ -1152,7 +1152,7 @@ function getTeamLogo(teamName){
         : '';
     return {
       cup,
-      logo:cup?'coupe-de-france-logo.webp':'logo-ligue-2.webp',
+      logo:cup?'coupe-de-france-logo.webp':'Ligue%202.webp',
       name:cup?'Coupe de France':'Ligue 2 BKT',
       round
     };
