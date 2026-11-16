@@ -1176,10 +1176,12 @@ function getTeamLogo(teamName){
     return `
       <div class="verts-match-visual ${comp.cup?'is-cup':'is-ligue'}">
         <div class="verts-match-cover">
-          <div class="verts-match-competition-logo">
-            <img src="${comp.logo}" alt="${esc(comp.name)}" loading="lazy">
-          </div>
-          ${comp.round?`<span class="verts-match-round">${esc(comp.round)}</span>`:''}
+         <div class="verts-match-competition-header">
+  <div class="verts-match-competition-logo">
+    <img src="${comp.logo}" alt="${esc(comp.name)}" loading="lazy">
+  </div>
+  ${comp.round ? `<span class="verts-match-round">${esc(comp.round)}</span>` : ''}
+</div>
         </div>
         <div class="verts-match-body">
           <div class="verts-match-lineup">
