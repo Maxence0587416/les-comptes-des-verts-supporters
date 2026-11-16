@@ -2791,3 +2791,41 @@ button{
   font-weight: 800;
   text-align: left;
 }
+
+
+/* ===== CARTE MATCH RÉDUITE — STYLE ASSE ===== */
+
+.verts-match-card.is-collapsed {
+  background: linear-gradient(
+    110deg,
+    #06452e 0%,
+    #087b43 55%,
+    #00a85a 100%
+  ) !important;
+
+  border: 1px solid rgba(255,255,255,.25) !important;
+  border-radius: 17px !important;
+  box-shadow: 0 6px 20px rgba(0,35,20,.25) !important;
+}
+
+/* Bandeau vert et texte blanc */
+.verts-match-card.is-collapsed .match-collapse-toggle {
+  background: transparent !important;
+  color: #ffffff !important;
+  min-height: 56px;
+  padding: 12px 18px;
+}
+
+/* Nom du match */
+.verts-match-card.is-collapsed .match-collapse-summary {
+  color: #ffffff !important;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* Bouton + */
+.verts-match-card.is-collapsed .match-collapse-symbol {
+  color: #ffffff !important;
+  font-size: 26px;
+  font-weight: 800;
+}
