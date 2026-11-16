@@ -2404,3 +2404,41 @@ button{
   font-size: 14px;
   font-weight: 600;
 }
+
+
+
+/* Carte match : heure et journée sans pastilles */
+.verts-match-visual .verts-match-time,
+.verts-match-visual .verts-match-round {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+.verts-match-visual .verts-match-time {
+  color: #008b45 !important;
+  font-size: 27px;
+}
+
+.verts-match-visual .verts-match-round {
+  color: #087d42 !important;
+  font-size: 12px;
+}
+
+/* Logo sans fond blanc */
+.verts-match-visual .verts-match-competition-logo {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.verts-match-visual .verts-match-competition-logo img {
+  width: 210px;
+  height: auto;
+  max-width: 100%;
+}
+
