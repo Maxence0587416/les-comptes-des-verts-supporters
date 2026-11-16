@@ -2723,3 +2723,71 @@ button{
   cursor: pointer;
 }
 
+/* ===== CARTES MATCHS DÉPLIABLES ===== */
+
+.verts-match-card {
+  position: relative;
+}
+
+/* Bouton +/- sur la carte ouverte */
+.match-collapse-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid #d3e5da;
+  border-radius: 50%;
+  background: rgba(255,255,255,.96);
+  color: #075d36;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+.match-collapse-symbol {
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.match-collapse-summary {
+  display: none;
+}
+
+/* Carte réduite */
+.verts-match-card.is-collapsed {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+/* Masquer les détails de la carte */
+.verts-match-card.is-collapsed
+> :not(.match-collapse-toggle) {
+  display: none !important;
+}
+
+/* Bandeau compact visible */
+.verts-match-card.is-collapsed .match-collapse-toggle {
+  position: relative;
+  top: auto;
+  right: auto;
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  justify-content: space-between;
+  box-shadow: none;
+}
+
+.verts-match-card.is-collapsed .match-collapse-summary {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: left;
+}
