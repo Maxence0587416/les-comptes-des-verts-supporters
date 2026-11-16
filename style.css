@@ -2226,3 +2226,72 @@ button{
   }
 }
 
+/* ==================================================
+   CARTES ASSE : LIGUE 2 / COUPE DE FRANCE (2026-27)
+   Le stade ne figure QUE dans la bande du haut.
+   ================================================== */
+.verts-match-card-home.home-match-card,
+.verts-match-card.match-card{
+  background:#fff;
+  border:1px solid #e0e6e1;
+  border-radius:19px;
+  padding:0;
+  overflow:hidden;
+  box-shadow:0 8px 22px rgba(0,35,20,.14);
+}
+.verts-match-card.match-card::before{display:none}
+.verts-match-visual{background:#fff;color:#12251a}
+.verts-match-cover{
+  min-height:108px;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:12px 12px 27px;
+  background-image:linear-gradient(180deg,rgba(1,43,27,.75),rgba(2,59,34,.16) 65%,#fff 100%),url('GG.webp');
+  background-position:center,center 47%;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.verts-match-competition-logo{
+  display:flex;align-items:center;justify-content:center;
+  padding:6px 13px;
+  background:rgba(255,255,255,.96);
+  border-radius:10px;
+  box-shadow:0 3px 12px rgba(0,0,0,.12);
+}
+.verts-match-competition-logo img{display:block;width:auto;max-width:195px;height:34px;object-fit:contain}
+.verts-match-visual.is-cup .verts-match-competition-logo img{height:43px;max-width:165px}
+.verts-match-round{
+  position:absolute;bottom:5px;left:50%;transform:translateX(-50%);
+  max-width:85%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background:#007c41;color:#fff;border-radius:999px;
+  padding:5px 15px;font-size:12px;font-weight:900;
+  box-shadow:0 2px 8px rgba(0,0,0,.14);
+}
+.verts-match-body{padding:8px 10px 12px;background:#fff}
+.verts-match-lineup{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,1.45fr) minmax(0,1fr);
+  align-items:center;gap:5px;min-height:126px;
+}
+.verts-match-side{display:flex;align-items:center;flex-direction:column;gap:6px;min-width:0;text-align:center}
+.verts-match-side img,.verts-match-logo-placeholder{width:62px;height:62px;object-fit:contain}
+.verts-match-logo-placeholder{display:grid;place-items:center;font-size:36px}
+.verts-match-side strong{font-size:12px;line-height:1.2;overflow-wrap:anywhere;color:#14251b}
+.verts-match-meta{text-align:center;min-width:0}
+.verts-match-date{font-size:12px;font-weight:800;line-height:1.35;text-transform:capitalize;color:#152b20}
+.verts-match-time{display:inline-block;margin:7px 0;background:linear-gradient(135deg,#008b47,#006d39);color:#fff;border-radius:14px;padding:5px 12px;font-size:clamp(18px,5vw,27px);font-weight:950;letter-spacing:-.5px;white-space:nowrap}
+.verts-match-venue{font-size:10px;color:#486558;line-height:1.25}
+.verts-match-card-home .home-match-button{width:calc(100% - 22px);margin:3px 11px 12px;background:linear-gradient(135deg,#008b47,#006d39)}
+.verts-match-card .verts-match-top{margin:0 12px 2px;min-height:24px;justify-content:center}
+.verts-match-card .actions{margin:8px 12px 12px}
+.verts-match-card .deadline{margin:5px 12px 13px;padding-top:10px}
+.verts-match-card .ticket-status{margin:8px 12px 12px}
+.verts-match-card .match-badge{letter-spacing:.35px}
+@media(max-width:380px){
+  .verts-match-side img,.verts-match-logo-placeholder{width:49px;height:49px}
+  .verts-match-lineup{grid-template-columns:minmax(0,1fr) minmax(108px,1.45fr) minmax(0,1fr)}
+  .verts-match-side strong{font-size:11px}
+  .verts-match-date{font-size:11px}
+  .verts-match-time{font-size:19px}
+}
