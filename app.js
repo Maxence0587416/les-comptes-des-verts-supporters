@@ -1227,6 +1227,17 @@ window.cancelMatchChoiceEdit = function() {
   window.editingMatchChoice = null;
   renderPage();
 };
+
+  const collapsedMatchCards = new Set();
+
+window.toggleMatchCard = function(matchId) {
+  if (collapsedMatchCards.has(matchId)) {
+    collapsedMatchCards.delete(matchId);
+  } else {
+    collapsedMatchCards.add(matchId);
+  }
+  renderPage();
+};
   
   function renderMatchCard(m,compact=false){
 
@@ -1264,8 +1275,24 @@ window.cancelMatchChoiceEdit = function() {
 
 
     return `
-      <article class="match-card verts-match-card ${compact?'compact':''}">
-        ${renderMatchVisual(m)}
+    <article class="match-card verts-match-card ${compact?'compact':''} ${collapsedMatchCards.has(m.id)?'is-collapsed':''}">
+
+  <button
+    type="button"
+    class="match-collapse-toggle"
+    onclick="toggleMatchCard('${m.id}')"
+    aria-expanded="${!collapsedMatchCards.has(m.id)}"
+    aria-label="${collapsedMatchCards.has(m.id)?'Déplier':'Réduire'} le match"
+  >
+    <span class="match-collapse-summary">
+      ${esc(m.name || 'ASSE - ' + (m.opponent || 'Adversaire'))}
+    </span>
+    <span class="match-collapse-symbol">
+      ${collapsedMatchCards.has(m.id)?'+':'−'}
+    </span>
+  </button>
+
+  ${renderMatchVisual(m)}
         <div class="match-top verts-match-top">
           ${attMap[m.id]==='yes'
             ? '<span class="answer-badge yes-answer">Présent</span>'
