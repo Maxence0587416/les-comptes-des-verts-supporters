@@ -507,7 +507,7 @@ await loadData();
 
     const matchesResult=await sb
       .from('matches')
-      .select('id,name,date,opponent,stadium,venue,competition,season,closed,ticketing_opens_at,match_starts_at')
+      .select('id,name,date,opponent,stadium,venue,competition,round_number,cup_round,season,closed,ticketing_opens_at,match_starts_at')
       .order('date',{ascending:true});
 
 
@@ -856,7 +856,7 @@ function renderTicket(){
 
   <div class="home-section-title">
     <h2>Prochain match</h2>
-    <span>Ligue 2 BKT</span>
+    <span>${esc(nextMatch?.competition||'Ligue 2 BKT')}</span>
   </div>
 
   ${
@@ -1140,122 +1140,81 @@ function getTeamLogo(teamName){
   return '';
 }
 
-  function renderHomeMatch(m){
+  // Présentation commune aux cartes de l'accueil et de « Mes matchs ».
+  // Les valeurs de la journée et du tour viennent directement de Supabase.
+  function getCompetitionPresentation(m){
+    const cup=String(m.competition||'').toLowerCase().includes('coupe');
+    const rawRound=cup?String(m.cup_round||'').trim():'';
+    const round=cup
+      ? rawRound
+      : Number.isInteger(Number(m.round_number)) && Number(m.round_number)>0
+        ? 'Journée '+Number(m.round_number)
+        : '';
+    return {
+      cup,
+      logo:cup?'coupe-de-france-logo.webp':'logo-ligue-2.webp',
+      name:cup?'Coupe de France':'Ligue 2 BKT',
+      round
+    };
+  }
 
-  if(!m){
+  function renderMatchVisual(m){
+    const comp=getCompetitionPresentation(m);
+    const opponent=m.opponent||'Adversaire à confirmer';
+    const opponentLogo=getTeamLogo(opponent);
+    const date=m.match_starts_at
+      ? new Date(m.match_starts_at)
+      : m.date?new Date(m.date+'T12:00:00'):null;
+    const dateValid=date && !Number.isNaN(date.getTime());
+    const dateText=dateValid?new Intl.DateTimeFormat('fr-FR',{
+      timeZone:'Europe/Paris',weekday:'long',day:'numeric',month:'long',year:'numeric'
+    }).format(date):'Date à confirmer';
+    const timeText=m.match_starts_at&&dateValid?new Intl.DateTimeFormat('fr-FR',{
+      timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit'
+    }).format(date):'Heure à confirmer';
+    const venue=m.venue||m.stadium||'Stade à confirmer';
     return `
-      <div class="empty-state">
-        Aucun prochain match pour le moment.
+      <div class="verts-match-visual ${comp.cup?'is-cup':'is-ligue'}">
+        <div class="verts-match-cover">
+          <div class="verts-match-competition-logo">
+            <img src="${comp.logo}" alt="${esc(comp.name)}" loading="lazy">
+          </div>
+          ${comp.round?`<span class="verts-match-round">${esc(comp.round)}</span>`:''}
+        </div>
+        <div class="verts-match-body">
+          <div class="verts-match-lineup">
+            <div class="verts-match-side">
+              <img src="logos/LogoASSE.webp" alt="AS Saint-Étienne" loading="lazy">
+              <strong>ASSE</strong>
+            </div>
+            <div class="verts-match-meta">
+              <div class="verts-match-date">${esc(dateText)}</div>
+              <div class="verts-match-time">${esc(timeText)}</div>
+              <div class="verts-match-venue">${esc(venue)}</div>
+            </div>
+            <div class="verts-match-side">
+              ${opponentLogo?`<img src="${esc(opponentLogo)}" alt="${esc(opponent)}" loading="lazy">`:'<span class="verts-match-logo-placeholder">⚽</span>'}
+              <strong>${esc(opponent)}</strong>
+            </div>
+          </div>
+        </div>
       </div>
     `;
   }
 
-  const opponent=m.opponent||'Adversaire';
-  const opponentLogo=getTeamLogo(opponent);
-
-  const matchDate=m.match_starts_at
-    ? new Date(m.match_starts_at)
-    : (m.date ? new Date(m.date+'T12:00:00') : null);
-
-  const dateLabel=matchDate
-    ? matchDate.toLocaleDateString(
-        'fr-FR',
-        {
-          weekday:'long',
-          day:'numeric',
-          month:'long',
-          year:'numeric'
-        }
-      )
-    : '';
-
-  const timeLabel=m.match_starts_at
-    ? matchDate.toLocaleTimeString(
-        'fr-FR',
-        {
-          hour:'2-digit',
-          minute:'2-digit'
-        }
-      )
-    : '';
-
-  const place=m.venue||m.stadium||'Stade Geoffroy-Guichard';
-
-  return `
-
-    <div class="home-match-card">
-
-      <div class="home-match-competition">
-        ${esc(m.competition||'Ligue 2 BKT')}
+  function renderHomeMatch(m){
+    if(!m)return '<div class="empty-state">Aucun prochain match pour le moment.</div>';
+    return `
+      <div class="home-match-card verts-match-card-home">
+        ${renderMatchVisual(m)}
+        <button type="button" class="home-match-button"
+                onclick="changePage('matches')">
+          🎟️ Voir le match <span aria-hidden="true">›</span>
+        </button>
       </div>
+    `;
+  }
 
-      <div class="home-match-teams">
-
-        <div class="home-team">
-          <img
-            src="logos/LogoASSE.webp"
-            alt="ASSE"
-            class="home-team-logo"
-          >
-          <strong>ASSE</strong>
-          <span>Saint-Étienne</span>
-        </div>
-
-        <div class="home-match-center">
-
-          <strong class="home-match-date">
-            ${esc(dateLabel)}
-          </strong>
-
-          ${
-            timeLabel
-            ? `
-              <div class="home-match-time">
-                ${esc(timeLabel)}
-              </div>
-            `
-            : ''
-          }
-
-          <div class="home-match-place">
-            🏟️ ${esc(place)}
-          </div>
-
-        </div>
-
-        <div class="home-team">
-
-          ${
-            opponentLogo
-            ? `
-              <img
-                src="${esc(opponentLogo)}"
-                alt="${esc(opponent)}"
-                class="home-team-logo"
-              >
-            `
-            : ''
-          }
-
-          <strong>${esc(opponent)}</strong>
-
-        </div>
-
-      </div>
-
-      <button
-        class="home-match-button"
-        onclick="changePage('matches')"
-      >
-        🎟️ Voir le match
-        <span>›</span>
-      </button>
-
-    </div>
-
-  `;
-}
-  
   function renderMatchCard(m,compact=false){
 
     const {tickets,attMap}=appData;
@@ -1292,56 +1251,15 @@ function getTeamLogo(teamName){
 
 
     return `
-
-      <article class="match-card ${compact?'compact':''}">
-
-        <div class="match-top">
-
-          <span class="match-badge">
-            MATCH
-          </span>
-
-          ${
-            attMap[m.id]==='yes'
-            ? `<span class="answer-badge yes-answer">Présent</span>`
+      <article class="match-card verts-match-card ${compact?'compact':''}">
+        ${renderMatchVisual(m)}
+        <div class="match-top verts-match-top">
+          ${attMap[m.id]==='yes'
+            ? '<span class="answer-badge yes-answer">Présent</span>'
             : attMap[m.id]==='no'
-            ? `<span class="answer-badge no-answer">Absent</span>`
-            : ''
-          }
-
+              ? '<span class="answer-badge no-answer">Absent</span>'
+              : '<span class="match-badge">Répondre au match</span>'}
         </div>
-
-
-        <div class="match-teams">
-  <div class="match-team">
-    <img src="logos/LogoASSE.webp" alt="ASSE">
-    <span>ASSE</span>
-  </div>
-
-  <div class="match-versus">VS</div>
-
-  <div class="match-team">
-    ${opponentLogo ? `<img src="${opponentLogo}" alt="${esc(m.opponent)}">` : ''}
-    <span>${esc(m.opponent || 'Adversaire')}</span>
-  </div>
-</div>
-
-
-
-        <div class="match-info">
-          <div>📅 ${esc(matchDate)}</div>
-
-          <div>
-            📍 ${esc(
-              m.venue||
-              m.stadium||
-              'Stade non renseigné'
-            )}
-          </div>
-
-        </div>
-
-
         ${
           !expired
           ? `
