@@ -1129,6 +1129,7 @@ function getTeamLogo(teamName){
     'dijon':'logos/dijon-logo.webp',
     'reims':'logos/Stade-de-Reims-logo.webp',
     'pau':'logos/logo-pau.webp'
+    'villefranche':'logos/villefranche-beaujolais.webp'
   };
 
   for(const key in logos){
