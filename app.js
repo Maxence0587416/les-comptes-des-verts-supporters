@@ -1180,7 +1180,7 @@ function getTeamLogo(teamName){
   <div class="verts-match-competition-logo">
     <img src="${comp.logo}" alt="${esc(comp.name)}" loading="lazy">
   </div>
-  ${comp.round ? `<span class="verts-match-round">${esc(comp.round)}</span>` : ''}
+  
 </div>
         </div>
         <div class="verts-match-body">
@@ -1191,6 +1191,7 @@ function getTeamLogo(teamName){
             </div>
             <div class="verts-match-meta">
               <div class="verts-match-date">${esc(dateText)}</div>
+              ${comp.round ? `<span class="verts-match-round">${esc(comp.round)}</span>` : ''}
               <div class="verts-match-time">${esc(timeText)}</div>
               <div class="verts-match-venue">${esc(venue)}</div>
             </div>
