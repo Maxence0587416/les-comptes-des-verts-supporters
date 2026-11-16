@@ -1,4 +1,4 @@
-const CACHE = 'verts-supporter-v45';
+const CACHE = 'verts-supporter-v46';
 
 const APP_FILES = [
   './',
