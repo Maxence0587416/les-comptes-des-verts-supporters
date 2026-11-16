@@ -1218,6 +1218,16 @@ function getTeamLogo(teamName){
     `;
   }
 
+  window.editMatchChoice = function(matchId) {
+  window.editingMatchChoice = matchId;
+  renderPage();
+};
+
+window.cancelMatchChoiceEdit = function() {
+  window.editingMatchChoice = null;
+  renderPage();
+};
+  
   function renderMatchCard(m,compact=false){
 
     const {tickets,attMap}=appData;
@@ -1267,25 +1277,60 @@ function getTeamLogo(teamName){
           !expired
           ? `
 
-            <div class="actions">
+          
+${attMap[m.id] && window.editingMatchChoice !== m.id
+  ? `
+    <div class="match-choice-confirmation">
+      <div class="match-choice-icon">
+        ${attMap[m.id] === 'yes' ? '✓' : '−'}
+      </div>
 
-              <button
-                class="btn yes ${attMap[m.id]==='yes'?'selected':''}"
-                onclick="answer('${m.id}','yes')"
-              >
-                ✓ Je veux y aller
-              </button>
+      <strong>
+        ${attMap[m.id] === 'yes'
+          ? 'Je serai présent !'
+          : 'Je ne pourrai pas venir'}
+      </strong>
 
+      <p>Ta réponse a bien été enregistrée.</p>
 
-              <button
-                class="btn no ${attMap[m.id]==='no'?'selected':''}"
-                onclick="answer('${m.id}','no')"
-              >
-                Je ne peux pas
-              </button>
+      <button
+        type="button"
+        class="match-choice-edit"
+        onclick="editMatchChoice('${m.id}')"
+      >
+        ✎ Modifier mon choix
+      </button>
+    </div>
+  `
+  : `
+    <div class="actions match-choice-actions">
+      <button
+        type="button"
+        class="btn yes"
+        onclick="answer('${m.id}','yes')"
+      >
+        ✓ Je veux y aller
+      </button>
 
-            </div>
+      <button
+        type="button"
+        class="btn no"
+        onclick="answer('${m.id}','no')"
+      >
+        Je ne peux pas y aller
+      </button>
+    </div>
 
+    ${attMap[m.id] ? `
+      <button
+        type="button"
+        class="match-choice-cancel"
+        onclick="cancelMatchChoiceEdit()"
+      >
+        Annuler la modification
+      </button>
+    ` : ''}
+  `}
 
             ${
               deadline
@@ -1799,7 +1844,8 @@ if(notifications){
       return;
     }
 
-
+window.editingMatchChoice = null;
+    
     await loadData();
   };
 
