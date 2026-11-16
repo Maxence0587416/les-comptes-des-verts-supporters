@@ -1128,7 +1128,7 @@ function getTeamLogo(teamName){
     'annecy':'logos/Logo-Annecy-foot.webp',
     'dijon':'logos/dijon-logo.webp',
     'reims':'logos/Stade-de-Reims-logo.webp',
-    'pau':'logos/logo-pau.webp'
+    'pau':'logos/logo-pau.webp',
     'villefranche':'logos/villefranche-beaujolais.webp'
   };
 
@@ -1147,7 +1147,9 @@ function getTeamLogo(teamName){
     const cup=String(m.competition||'').toLowerCase().includes('coupe');
     const rawRound=cup?String(m.cup_round||'').trim():'';
     const round=cup
-      ? rawRound
+      ? (/^[1-8]$/.test(rawRound)
+    ? `${rawRound}${rawRound === '1' ? 'er' : 'e'} tour`
+    : rawRound)
       : Number.isInteger(Number(m.round_number)) && Number(m.round_number)>0
         ? 'Journée '+Number(m.round_number)
         : '';
