@@ -2829,3 +2829,22 @@ button{
   font-size: 26px;
   font-weight: 800;
 }
+
+
+
+
+.verts-match-side img,
+.verts-match-logo-placeholder{
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 8px;
+}
+
+.verts-match-side strong{
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.2;
+}
